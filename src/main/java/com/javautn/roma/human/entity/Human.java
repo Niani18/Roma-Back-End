@@ -4,7 +4,7 @@ import jakarta.persistence.*;
 
 import java.util.Date;
 
-@Entity()
+@Entity
 @Table(name = "humano")
 @Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Human {
@@ -12,14 +12,15 @@ public abstract class Human {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected long id;
-    protected String fullName;
-    protected Date birthDate;
-    protected Date deathDate;
+    @Column protected String fullName;
+    @Column protected Date birthDate;
+    @Column protected Date deathDate;
+    @Column protected String subclass;
 
     protected Human() {
     }
 
-    protected Human(String fullName, Date birthDate, Date deathDate) {
+    public Human(String fullName, Date birthDate, Date deathDate) {
         this.fullName = fullName;
         this.birthDate = birthDate;
         this.deathDate = deathDate;

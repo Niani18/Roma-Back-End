@@ -1,2 +1,4 @@
-package com.javautn.roma.human.service;public class HumanService {
+package com.javautn.roma.human.service;
+
+public class HumanService {
 }

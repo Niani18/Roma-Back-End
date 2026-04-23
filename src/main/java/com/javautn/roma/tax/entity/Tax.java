@@ -21,7 +21,7 @@ public class Tax {
     public String toString() {
         return "Tax={ id=" + this.id +
                 " name='" + this.name + "'" +
-                " description='" + this.description + "'";
+                " description='" + this.description + "' }";
     }
 
     @Override
