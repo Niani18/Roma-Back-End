@@ -2,8 +2,8 @@ package com.javautn.roma.human.controller;
 
 import com.javautn.roma.human.dto.CitizenCreateDTO;
 import com.javautn.roma.human.dto.SlaveCreateDTO;
-import com.javautn.roma.human.entity.Citizen;
-import com.javautn.roma.human.entity.Slave;
+import com.javautn.roma.human.entity.CitizenEntity;
+import com.javautn.roma.human.entity.SlaveEntity;
 import com.javautn.roma.human.service.HumanService;
 import org.springframework.web.bind.annotation.*;
 
@@ -20,56 +20,56 @@ public class HumanController {
     }
 
     @GetMapping("citizen/")
-    public ArrayList<Citizen> getAllCitizen() {
-        return new ArrayList<Citizen>();
+    public ArrayList<CitizenEntity> getAllCitizen() {
+        return new ArrayList<CitizenEntity>();
     }
 
     @GetMapping("slave/")
-    public ArrayList<Slave> getAllSlave() {
-        return new ArrayList<Slave>();
+    public ArrayList<SlaveEntity> getAllSlave() {
+        return new ArrayList<SlaveEntity>();
     }
 
     @GetMapping("citizen/:id/")
-    public Citizen getCitizen(@PathVariable("id") final long id) {
+    public CitizenEntity getCitizen(@PathVariable("id") final long id) {
         return null;
     }
 
     @GetMapping("slave/:id/")
-    public Citizen getSlave(@PathVariable("id") final long id) {
+    public CitizenEntity getSlave(@PathVariable("id") final long id) {
         return null;
     }
 
     @PostMapping("citizen/")
-    public Citizen createCitizen(@RequestBody final CitizenCreateDTO ccdto) {
+    public CitizenEntity createCitizen(@RequestBody final CitizenCreateDTO ccdto) {
         return null;
     }
 
     @PostMapping("slave/")
-    public Citizen createSlave(@RequestBody final SlaveCreateDTO scdto) {
+    public CitizenEntity createSlave(@RequestBody final SlaveCreateDTO scdto) {
         return null;
     }
 
     @PutMapping("citizen/:id/")
-    public Citizen updateCitizen(
+    public CitizenEntity updateCitizen(
             @PathVariable("id") final long id,
             @RequestBody final CitizenCreateDTO postdto) {
         return null;
     }
 
     @PutMapping("slave/:id/")
-    public Citizen updateSlave(
+    public CitizenEntity updateSlave(
             @PathVariable("id") final long id,
             @RequestBody final SlaveCreateDTO postdto) {
         return null;
     }
 
     @DeleteMapping("citizen/:id/")
-    public Citizen deleteCitizen() {
+    public CitizenEntity deleteCitizen() {
         return null;
     }
 
     @DeleteMapping("slave/:id/")
-    public Citizen deleteSlave() {
+    public CitizenEntity deleteSlave() {
         return null;
     }
 

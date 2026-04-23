@@ -7,13 +7,13 @@ import jakarta.persistence.DiscriminatorValue;
 
 @Entity
 @DiscriminatorValue("Slave")
-public class Slave extends Human {
+public class SlaveEntity extends HumanEntity {
 
     @Column protected float price;
 
-    protected Slave() {
+    protected SlaveEntity() {
         super();
-        super.subclass = Slave.class.getName();
+        super.subclass = SlaveEntity.class.getName();
     }
 
     @Override
@@ -26,7 +26,7 @@ public class Slave extends Human {
 
     @Override
     public boolean equals(Object B) {
-        return (B instanceof Slave slave &&
+        return (B instanceof SlaveEntity slave &&
                 slave.price == this.price &&
                 super.equals(B)
         );

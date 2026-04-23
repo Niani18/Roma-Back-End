@@ -8,7 +8,7 @@ import java.util.Date;
 @Table(name = "human")
 @Inheritance(strategy = InheritanceType.JOINED)
 @DiscriminatorColumn(name = "subclass")
-public abstract class Human {
+public abstract class HumanEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
@@ -18,10 +18,10 @@ public abstract class Human {
     @Column                                 protected Date deathDate;
     @Column( nullable = false )             protected String subclass;
 
-    protected Human() {
+    protected HumanEntity() {
     }
 
-    public Human(String fullName, Date birthDate, Date deathDate) {
+    public HumanEntity(String fullName, Date birthDate, Date deathDate) {
         this.fullName = fullName;
         this.birthDate = birthDate;
         this.deathDate = deathDate;
@@ -38,7 +38,7 @@ public abstract class Human {
 
     @Override
     public boolean equals(final Object B) {
-        return (B instanceof Human human &&
+        return (B instanceof HumanEntity human &&
                 this.id != human.id &&
                 this.fullName.equals(human.fullName) &&
                 this.birthDate.equals(human.birthDate) &&

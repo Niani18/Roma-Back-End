@@ -6,13 +6,13 @@ import jakarta.persistence.DiscriminatorValue;
 
 @Entity
 @DiscriminatorValue("Citizen")
-public class Citizen extends Human {
+public class CitizenEntity extends HumanEntity {
 
     @Column( length = 50, nullable = false ) private String socialRole;
 
-    protected Citizen() {
+    protected CitizenEntity() {
         super();
-        super.subclass = Citizen.class.getName();
+        super.subclass = CitizenEntity.class.getName();
     }
 
 
@@ -27,7 +27,7 @@ public class Citizen extends Human {
 
     @Override
     public boolean equals(final Object B) {
-        return (B instanceof Citizen cit &&
+        return (B instanceof CitizenEntity cit &&
                 super.equals(B) &&
                 this.socialRole.equals(cit.socialRole)
         );
