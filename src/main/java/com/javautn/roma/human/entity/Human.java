@@ -1,19 +1,30 @@
 package com.javautn.roma.human.entity;
 
+import jakarta.persistence.*;
+
 import java.util.Date;
 
+@Entity()
+@Table(name = "humano")
+@Inheritance(strategy = InheritanceType.JOINED)
 public abstract class Human {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected long id;
     protected String fullName;
     protected Date birthDate;
     protected Date deathDate;
 
-    public Human() {
-        this.id = 0;
-        this.fullName = "";
-        this.birthDate = null;
-        this.deathDate = null;
+    protected Human() {
     }
+
+    protected Human(String fullName, Date birthDate, Date deathDate) {
+        this.fullName = fullName;
+        this.birthDate = birthDate;
+        this.deathDate = deathDate;
+    }
+
 
     @Override
     public String toString() {
