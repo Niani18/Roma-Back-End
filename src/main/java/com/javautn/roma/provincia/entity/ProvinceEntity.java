@@ -11,6 +11,8 @@ public class ProvinceEntity {
     @Id()
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     private long id;
+
+    @Column(length =  50, nullable = false)
     private String name;
 
     public long getIg() {
@@ -30,16 +32,25 @@ public class ProvinceEntity {
     }
 
     public ProvinceEntity(long id, String name) {
-        setIg(id);
-        setName(name);
+        this.id = id;
+        this.name = name;
     }
 
     protected ProvinceEntity() {}
 
     @Override
     public String toString() {
-        return "ProvinceEntity {ig=" + id + ", " +
+        return "ProvinceEntity={ig=" + id + ", " +
                                 "name=" + name + "}";
     }
+
+    @Override
+    public boolean equals(final Object o) {
+        return ((o instanceof ProvinceEntity province) &&
+                this.id != province.id &&
+                this.name.equals(province.name)
+        );
+    }
+
 
 }

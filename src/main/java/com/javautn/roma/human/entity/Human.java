@@ -12,8 +12,14 @@ public abstract class Human {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected long id;
+
+    @Column(length = 50, nullable = false)
     protected String fullName;
+
+    @Column(length = 50, nullable = false)
     protected Date birthDate;
+
+    @Column(length = 50, nullable = true)
     protected Date deathDate;
 
     protected Human() {

@@ -1,6 +1,10 @@
 package com.javautn.roma.human.entity;
 
+import jakarta.persistence.Column;
+
 public class Citizen extends Human {
+
+    @Column(length = 50, nullable = true)
     private String socialRole;
 
     @Override
