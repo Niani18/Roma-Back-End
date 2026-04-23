@@ -8,12 +8,13 @@ import jakarta.persistence.DiscriminatorValue;
 @DiscriminatorValue("Citizen")
 public class Citizen extends Human {
 
-    @Column private String socialRole;
+    @Column( length = 50, nullable = false ) private String socialRole;
 
     protected Citizen() {
         super();
         super.subclass = Citizen.class.getName();
     }
+
 
     @Override
     public String toString() {

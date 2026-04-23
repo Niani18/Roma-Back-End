@@ -5,17 +5,18 @@ import jakarta.persistence.*;
 import java.util.Date;
 
 @Entity
-@Table(name = "humano")
+@Table(name = "human")
 @Inheritance(strategy = InheritanceType.JOINED)
+@DiscriminatorColumn(name = "subclass")
 public abstract class Human {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     protected long id;
-    @Column protected String fullName;
-    @Column protected Date birthDate;
-    @Column protected Date deathDate;
-    @Column protected String subclass;
+    @Column(length = 50, nullable = false)  protected String fullName;
+    @Column( nullable = false )             protected Date birthDate;
+    @Column                                 protected Date deathDate;
+    @Column( nullable = false )             protected String subclass;
 
     protected Human() {
     }
