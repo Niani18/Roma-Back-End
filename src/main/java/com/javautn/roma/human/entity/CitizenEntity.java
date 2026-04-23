@@ -12,7 +12,7 @@ public class CitizenEntity extends HumanEntity {
 
     protected CitizenEntity() {
         super();
-        super.subclass = CitizenEntity.class.getName();
+        super.subclass = "Citizen";
     }
 
 
