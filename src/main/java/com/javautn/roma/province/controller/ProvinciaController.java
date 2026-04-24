@@ -1,4 +1,4 @@
-package com.javautn.roma.provincia.controller;
+package com.javautn.roma.province.controller;
 
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;

@@ -5,6 +5,7 @@ import com.javautn.roma.human.dto.SlaveCreateDTO;
 import com.javautn.roma.human.entity.CitizenEntity;
 import com.javautn.roma.human.entity.SlaveEntity;
 import com.javautn.roma.human.service.HumanService;
+import jakarta.validation.Valid;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.ArrayList;
@@ -40,19 +41,19 @@ public class HumanController {
     }
 
     @PostMapping("citizen/")
-    public CitizenEntity createCitizen(@RequestBody final CitizenCreateDTO ccdto) {
+    public CitizenEntity createCitizen(@Valid @RequestBody final CitizenCreateDTO ccdto) {
         return null;
     }
 
     @PostMapping("slave/")
-    public CitizenEntity createSlave(@RequestBody final SlaveCreateDTO scdto) {
+    public CitizenEntity createSlave(@Valid @RequestBody final SlaveCreateDTO scdto) {
         return null;
     }
 
     @PutMapping("citizen/:id/")
     public CitizenEntity updateCitizen(
             @PathVariable("id") final long id,
-            @RequestBody final CitizenCreateDTO postdto) {
+            @Valid @RequestBody final CitizenCreateDTO postdto) {
         return null;
     }
 

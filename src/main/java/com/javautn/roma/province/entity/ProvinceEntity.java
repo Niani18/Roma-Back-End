@@ -1,8 +1,6 @@
-package com.javautn.roma.provincia.entity;
+package com.javautn.roma.province.entity;
 
 import jakarta.persistence.*;
-
-import java.util.Objects;
 
 @Entity()
 @Table(name = "provincia")

@@ -14,7 +14,6 @@ public class FamilyEntity {
     String name;
 
 
-
     public long getId() {
         return id;
     }
