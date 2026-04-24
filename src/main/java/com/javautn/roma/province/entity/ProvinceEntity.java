@@ -13,11 +13,11 @@ public class ProvinceEntity {
     @Column(length =  50, nullable = false)
     private String name;
 
-    public long getIg() {
+    public long getId() {
         return id;
     }
 
-    public void setIg(long id) {
+    public void setId(long id) {
         this.id = id;
     }
 
