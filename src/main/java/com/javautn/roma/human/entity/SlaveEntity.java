@@ -13,7 +13,6 @@ public class SlaveEntity extends HumanEntity {
 
     protected SlaveEntity() {
         super();
-        super.subclass = SlaveEntity.class.getName();
     }
 
     @Override
