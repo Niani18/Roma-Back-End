@@ -1,13 +1,11 @@
 package com.javautn.roma.province.service;
 
 import com.javautn.roma.province.dto.ProvinceCreateDto;
-import com.javautn.roma.province.dto.ProvinceResponceDto;
+import com.javautn.roma.province.dto.ProvinceResponseDto;
 import com.javautn.roma.province.entity.ProvinceEntity;
 import com.javautn.roma.province.repository.ProvinceRepository;
-import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,25 +18,39 @@ public class ProvinceService {
         this.provinceRepository = provinceRepository;
     }
 
-    public List<ProvinceResponceDto> getAllProvinces() {
+    public List<ProvinceResponseDto> getAllProvinces() {
         return provinceRepository.findAll().stream()
-                .map(province -> new ProvinceResponceDto(province.getId(), province.getName()))
+                .map(province -> new ProvinceResponseDto(province.getId(), province.getName()))
                 .toList();
         }
 
-    public Optional<ProvinceResponceDto> getOneProvince(long id) {
+    public Optional<ProvinceResponseDto> getOneProvince(long id) {
         Optional<ProvinceEntity> province = provinceRepository.findById(id);
-        return province.map(provinceEntity -> new ProvinceResponceDto(provinceEntity.getId(), provinceEntity.getName()));
+        return province.map(provinceEntity -> new ProvinceResponseDto(provinceEntity.getId(), provinceEntity.getName()));
     }
 
-    public ProvinceResponceDto createProvince(ProvinceCreateDto dto) {
-        ProvinceEntity province = new ProvinceEntity(dto.getName());
+    public ProvinceResponseDto createProvince(ProvinceCreateDto dto) {
+        if (provinceRepository.existsByName(dto.getName())) {
+            return null;
+        }
 
+        ProvinceEntity province = new ProvinceEntity(dto.getName());
         ProvinceEntity savedProvince = provinceRepository.save(province);
 
-        return new ProvinceResponceDto(
-                savedProvince.getId(),
-                savedProvince.getName()
-        );
+        return new ProvinceResponseDto(savedProvince.getId(), savedProvince.getName());
     }
+
+    public Optional<ProvinceResponseDto> updateProvince(ProvinceCreateDto dto, long id) {
+        if (provinceRepository.existsByNameAndIdNot(dto.getName(), id)) {
+            return Optional.empty();
+        }
+
+        return provinceRepository.findById(id)
+                .map(province -> {
+                    province.setName(dto.getName());
+                    ProvinceEntity saved = provinceRepository.save(province);
+                    return new ProvinceResponseDto(saved.getId(), saved.getName());
+                });
+    }
+
 }
