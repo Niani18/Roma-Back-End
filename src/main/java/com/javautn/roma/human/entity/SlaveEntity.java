@@ -4,15 +4,27 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.DiscriminatorValue;
 
+import java.util.Date;
+
 
 @Entity
 @DiscriminatorValue("Slave")
 public class SlaveEntity extends HumanEntity {
 
-    @Column protected float price;
+    @Column protected double price;
 
     protected SlaveEntity() {
         super();
+    }
+
+    public SlaveEntity(
+            final String fullName,
+            final Date birthDate,
+            final Date deathDate,
+            final double price
+    ) {
+        super(fullName, birthDate, deathDate);
+        this.price = price;
     }
 
     @Override
