@@ -1,7 +1,6 @@
 package com.javautn.roma.human.controller;
 
-import com.javautn.roma.human.dto.CitizenCreateDTO;
-import com.javautn.roma.human.dto.SlaveCreateDTO;
+import com.javautn.roma.human.dto.*;
 import com.javautn.roma.human.entity.CitizenEntity;
 import com.javautn.roma.human.entity.SlaveEntity;
 import com.javautn.roma.human.service.HumanService;
@@ -10,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 //samu, cuando veas esto RequestEntity es para fromatear directamente el mensaje para el front a un http asi que porfa cambialo uwu
 // Gotcha bro, entiendo igual que es ResponseEntity
@@ -25,66 +25,66 @@ public class HumanController {
     }
 
     @GetMapping("citizen/getAll")
-    public ResponseEntity<List<CitizenEntity>> getAllCitizen() {
-        return ResponseEntity.ok(humanService.getAllCitizen());
+    public ResponseEntity<List<CitizenResponseDTO>> getAllCitizen() {
+        return ResponseEntity.ok(humanService.getAllCitizen().stream().map(CitizenResponseDTO::fromCitizen).toList());
     }
 
     @GetMapping("slave/getAll")
-    public ResponseEntity<List<SlaveEntity>> getAllSlave() {
-        return ResponseEntity.ok(humanService.getAllSlaves());
+    public ResponseEntity<List<SlaveResponseDTO>> getAllSlave() {
+        return ResponseEntity.ok(humanService.getAllSlaves().stream().map(SlaveResponseDTO::fromSlave).toList());
     }
 
-    @GetMapping("citizen/{id}/")
-    public ResponseEntity<CitizenEntity> getCitizen(@PathVariable("id") final long id) {
-        return ResponseEntity.ok(humanService.getCitizen(id));
+    @GetMapping("citizen/{id}")
+    public ResponseEntity<CitizenResponseDTO> getCitizen(@PathVariable("id") final long id) {
+        return ResponseEntity.of(humanService.getCitizen(id).map(CitizenResponseDTO::fromCitizen));
     }
 
-    @GetMapping("slave/{id}/")
-    public ResponseEntity<SlaveEntity> getSlave(@PathVariable("id") final long id) {
-        return ResponseEntity.ok(humanService.getSlave(id));
+    @GetMapping("slave/{id}")
+    public ResponseEntity<SlaveResponseDTO> getSlave(@PathVariable("id") final long id) {
+        return ResponseEntity.of(humanService.getSlave(id).map(SlaveResponseDTO::fromSlave));
     }
 
-    @PostMapping("citizen/")
-    public ResponseEntity<CitizenEntity> createCitizen(
+    @PostMapping("citizen")
+    public ResponseEntity<CitizenResponseDTO> createCitizen(
             @Valid @RequestBody final CitizenCreateDTO ccdto) {
         final CitizenEntity newCitizen = ccdto.newCitizen();
-        return ResponseEntity.ok(humanService.createCitizen(newCitizen));
+        return ResponseEntity.of(humanService.createCitizen(newCitizen).map(CitizenResponseDTO::fromCitizen));
     }
 
-    @PostMapping("slave/")
-    public ResponseEntity<SlaveEntity> createSlave(
+    @PostMapping("slave")
+    public ResponseEntity<SlaveResponseDTO> createSlave(
             @Valid @RequestBody final SlaveCreateDTO scdto) {
         final SlaveEntity newSlave = scdto.newSlave();
-        return ResponseEntity.ok(humanService.createSlave(newSlave));
+        return ResponseEntity.of(humanService.createSlave(newSlave).map(SlaveResponseDTO::fromSlave));
     }
 
-    @PutMapping("citizen/{id}/")
-    public ResponseEntity<CitizenEntity> updateCitizen(
+    @PutMapping("citizen/{id}")
+    public ResponseEntity<CitizenResponseDTO> updateCitizen(
             @PathVariable("id") final long id,
             @Valid @RequestBody final CitizenCreateDTO postdto) {
         final CitizenEntity newCitizen = postdto.newCitizen();
-        return ResponseEntity.ok(humanService.updateCitizen(id, newCitizen));
+        return ResponseEntity.of(humanService.updateCitizen(id, newCitizen).map(CitizenResponseDTO::fromCitizen));
     }
 
-    @PutMapping("slave/{id}/")
-    public ResponseEntity<SlaveEntity> updateSlave(
+    @PutMapping("slave/{id}")
+    public ResponseEntity<SlaveResponseDTO> updateSlave(
             @PathVariable("id") final long id,
             @Valid @RequestBody final SlaveCreateDTO postdto) {
         final SlaveEntity newSlave = postdto.newSlave();
-        return ResponseEntity.ok(humanService.updateSlave(id, newSlave));
+        return ResponseEntity.of(humanService.updateSlave(id, newSlave).map(SlaveResponseDTO::fromSlave));
     }
 
-    @DeleteMapping("citizen/{id}/")
-    public ResponseEntity<CitizenEntity> deleteCitizen(@PathVariable("id") final long id) {
-        final CitizenEntity cit = humanService.getCitizen(id);
+    @DeleteMapping("citizen/{id}")
+    public ResponseEntity<CitizenResponseDTO> deleteCitizen(@PathVariable("id") final long id) {
+        final Optional<CitizenEntity> citizen = humanService.getCitizen(id);
         humanService.deleteCitizen(id);
-        return ResponseEntity.ok(cit);
+        return ResponseEntity.of(citizen.map(CitizenResponseDTO::fromCitizen));
     }
 
-    @DeleteMapping("slave/{id}/")
-    public ResponseEntity<SlaveEntity> deleteSlave(@PathVariable final long id) {
-        final SlaveEntity slave = humanService.getSlave(id);
+    @DeleteMapping("slave/{id}")
+    public ResponseEntity<SlaveResponseDTO> deleteSlave(@PathVariable final long id) {
+        final Optional<SlaveEntity> slave = humanService.getSlave(id);
         humanService.deleteSlave(id);
-        return ResponseEntity.ok(slave);
+        return ResponseEntity.of(slave.map(SlaveResponseDTO::fromSlave));
     }
 }

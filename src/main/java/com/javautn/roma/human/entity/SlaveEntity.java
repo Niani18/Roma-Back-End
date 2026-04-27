@@ -42,4 +42,8 @@ public class SlaveEntity extends HumanEntity {
                 super.equals(B)
         );
     }
+
+    public double getPrice() {
+        return price;
+    }
 }

@@ -1,5 +1,6 @@
 package com.javautn.roma.human.service;
 
+import com.javautn.roma.human.dto.CitizenResponseDTO;
 import com.javautn.roma.human.entity.CitizenEntity;
 import com.javautn.roma.human.entity.SlaveEntity;
 import com.javautn.roma.human.repository.HumanRepository;
@@ -7,6 +8,7 @@ import org.springframework.stereotype.Service;
 
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class HumanService {
@@ -25,36 +27,34 @@ public class HumanService {
         return new ArrayList<SlaveEntity>();
     }
 
-    public CitizenEntity getCitizen(final long id) {
-        return (CitizenEntity) humanRepo.getReferenceById(id);
+    public Optional<CitizenEntity> getCitizen(final long id) {
+        return humanRepo.findById(id).map(h -> (CitizenEntity) h);
     }
 
-    public SlaveEntity getSlave(final long id) {
-        return (SlaveEntity) humanRepo.getReferenceById(id);
+    public Optional<SlaveEntity> getSlave(final long id) {
+        return humanRepo.findById(id).map(h -> (SlaveEntity) h);
     }
 
-    public CitizenEntity createCitizen(CitizenEntity citizen) {
-        final CitizenEntity newCitizen = humanRepo.save(citizen);
-        humanRepo.flush();
-        return newCitizen;
+    public Optional<CitizenEntity> createCitizen(CitizenEntity citizen) {
+        final CitizenEntity newCitizen = humanRepo.saveAndFlush(citizen);
+        return Optional.of(newCitizen);
     }
 
-    public SlaveEntity createSlave(SlaveEntity slave) {
-        final SlaveEntity newSlave = humanRepo.save(slave);
-        humanRepo.flush();
-        return newSlave;
+    public Optional<SlaveEntity> createSlave(SlaveEntity slave) {
+        final SlaveEntity newSlave = humanRepo.saveAndFlush(slave);
+        return Optional.of(newSlave);
     }
 
-    public CitizenEntity updateCitizen(final long id, final CitizenEntity citizen) {
-        if (!humanRepo.existsById(id)) return null;
+    public Optional<CitizenEntity> updateCitizen(final long id, final CitizenEntity citizen) {
+        if (!humanRepo.existsById(id)) return Optional.empty();
         citizen.setId(id);
-        return humanRepo.saveAndFlush(citizen);
+        return Optional.of(humanRepo.saveAndFlush(citizen));
     }
 
-    public SlaveEntity updateSlave(final long id, final SlaveEntity slave) {
-        if (!humanRepo.existsById(id)) return null;
+    public Optional<SlaveEntity> updateSlave(final long id, final SlaveEntity slave) {
+        if (!humanRepo.existsById(id)) return Optional.empty();
         slave.setId(id);
-        return humanRepo.saveAndFlush(slave);
+        return Optional.of(humanRepo.saveAndFlush(slave));
     }
 
     public void deleteCitizen(final long id) {
