@@ -9,6 +9,7 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
+import java.util.Optional;
 
 @RestController
 @RequestMapping("/tax")
@@ -28,24 +29,26 @@ public class TaxController {
     @GetMapping("/getOne/{id}")
     public ResponseEntity<TaxResponseDTO> getOneById(
             @PathVariable("id") final long id) {
-        return ResponseEntity.of(taxService.getTaxById(id));
+        return ResponseEntity.of(taxService.getTaxById(id).map(TaxResponseDTO::fromTax));
     }
 
     @PostMapping("/create")
     public ResponseEntity<TaxResponseDTO> createTax(final TaxCreateDTO dto) {
-        return ResponseEntity.of(taxService.createTax(dto));
+        return ResponseEntity.of(taxService.createTax(dto).map(TaxResponseDTO::fromTax));
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<TaxResponseDTO> updateTax(
             @PathVariable("id") final long id,
             @RequestBody @Valid final TaxCreateDTO dto) {
-        return ResponseEntity.of(taxService.updateTax(id, dto));
+        return ResponseEntity.of(taxService.updateTax(id, dto).map(TaxResponseDTO::fromTax));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<TaxResponseDTO> deleteTax(
             @PathVariable("id") final long id) {
-        return ResponseEntity.of(taxService.deleteTax(id));
+        final Optional<TaxEntity> tax = taxService.getTaxById(id);
+        taxService.deleteTax(id);
+        return ResponseEntity.of(tax.map(TaxResponseDTO::fromTax));
     }
 }

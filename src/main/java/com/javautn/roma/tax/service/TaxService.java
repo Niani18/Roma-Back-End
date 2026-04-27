@@ -23,28 +23,23 @@ public class TaxService {
         return new ArrayList<TaxEntity>();
     }
 
-    public Optional<TaxResponseDTO> getTaxById(final long id) {
-        final Optional<TaxEntity> tax = taxRepository.findById(id);
-        return tax.isPresent() ? Optional.of(TaxResponseDTO.fromTax(tax.get())) : Optional.empty();
+    public Optional<TaxEntity> getTaxById(final long id) {
+        return taxRepository.findById(id);
     }
 
-    public Optional<TaxResponseDTO> createTax(final TaxCreateDTO dto) {
-        final TaxEntity tax = dto.newTax();
-        return Optional.of(TaxResponseDTO.fromTax(taxRepository.saveAndFlush(tax)));
+    public Optional<TaxEntity> createTax(final TaxCreateDTO dto) {
+        final TaxEntity tax = taxRepository.saveAndFlush(dto.newTax());
+        return Optional.of(tax);
     }
 
-    public Optional<TaxResponseDTO> updateTax(final long id, final TaxCreateDTO dto) {
-        TaxEntity tax = taxRepository.getReferenceById(id);
-        if (tax.getId() != id) return Optional.empty();
-        tax = dto.newTax();
+    public Optional<TaxEntity> updateTax(final long id, final TaxCreateDTO dto) {
+        if (!taxRepository.existsById(id)) return Optional.empty();
+        TaxEntity tax = dto.newTax();
         tax.setId(id);
-        return Optional.of(TaxResponseDTO.fromTax(taxRepository.saveAndFlush(tax)));
+        return Optional.of(taxRepository.saveAndFlush(tax));
     }
 
-    public Optional<TaxResponseDTO> deleteTax(final long id) {
-        final Optional<TaxEntity> tax = taxRepository.findById(id);
-        if (!tax.isPresent()) return Optional.empty();
+    public void deleteTax(final long id) {
         taxRepository.deleteById(id);
-        return Optional.of(TaxResponseDTO.fromTax(tax.get()));
     }
 }
