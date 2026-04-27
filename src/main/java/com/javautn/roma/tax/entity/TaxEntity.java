@@ -1,17 +1,25 @@
 package com.javautn.roma.tax.entity;
 
-public class Tax {
-    private int id;
-    private String name;
-    private String description;
+import jakarta.persistence.*;
 
-    public Tax() {
+@Entity
+@Table(name = "tax")
+public class TaxEntity {
+
+    @Id
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private long id;
+
+    @Column(nullable = false, length = 64) private String name;
+    @Column(nullable = false) private String description;
+
+    public TaxEntity() {
         this.id = 0;
         this.name = null;
         this.description = null;
     }
 
-    public Tax(final String name, final String description) {
+    public TaxEntity(final String name, final String description) {
         this.id = 0;
         this.name = name;
         this.description = description;
@@ -26,7 +34,7 @@ public class Tax {
 
     @Override
     public boolean equals(final Object B) {
-        return (B instanceof Tax tax &&
+        return (B instanceof TaxEntity tax &&
                 this.id == tax.id &&
                 this.name.equals(tax.name) &&
                 this.description.equals(tax.description)
@@ -37,7 +45,7 @@ public class Tax {
         return description;
     }
 
-    public void setDescription(String description) {
+    public void setDescription(final String description) {
         this.description = description;
     }
 
@@ -45,15 +53,15 @@ public class Tax {
         return name;
     }
 
-    public void setName(String name) {
+    public void setName(final String name) {
         this.name = name;
     }
 
-    public int getId() {
+    public long getId() {
         return id;
     }
 
-    public void setId(int id) {
+    public void setId(long id) {
         this.id = id;
     }
 }
