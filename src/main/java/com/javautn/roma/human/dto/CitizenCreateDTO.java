@@ -1,5 +1,6 @@
 package com.javautn.roma.human.dto;
 
+import com.javautn.roma.human.entity.CitizenEntity;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.Date;
@@ -19,5 +20,14 @@ public class CitizenCreateDTO extends HumanCreateDTO {
 
     public String getSocialRole() {
         return socialRole;
+    }
+
+    public CitizenEntity newCitizen() {
+        return new CitizenEntity(
+                super.getFullName(),
+                super.getBirthDate(),
+                super.getDeathDate(),
+                this.socialRole
+        );
     }
 }

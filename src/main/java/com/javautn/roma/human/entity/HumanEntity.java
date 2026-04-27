@@ -16,7 +16,6 @@ public abstract class HumanEntity {
     @Column(length = 50, nullable = false)  protected String fullName;
     @Column( nullable = false )             protected Date birthDate;
     @Column                                 protected Date deathDate;
-    @Column( nullable = false )             protected String subclass;
 
     protected HumanEntity() {
     }

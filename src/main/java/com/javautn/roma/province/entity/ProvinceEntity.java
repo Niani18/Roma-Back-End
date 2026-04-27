@@ -1,4 +1,4 @@
-package com.javautn.roma.provincia.entity;
+package com.javautn.roma.province.entity;
 
 import jakarta.persistence.*;
 
@@ -8,19 +8,22 @@ import java.util.Objects;
 @Table(name = "provincia")
 public class ProvinceEntity {
 
-    @Id()
+    @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private long id;
+    private Long id;
 
-    @Column(length =  50, nullable = false)
+    @Column(length = 50, nullable = false)
     private String name;
 
-    public long getIg() {
-        return id;
+    protected ProvinceEntity() {
     }
 
-    public void setIg(long id) {
-        this.id = id;
+    public ProvinceEntity(String name) {
+        this.name = name;
+    }
+
+    public Long getId() {
+        return id;
     }
 
     public String getName() {
@@ -31,23 +34,15 @@ public class ProvinceEntity {
         this.name = name;
     }
 
-    public ProvinceEntity(long id, String name) {
-        this.id = id;
-        this.name = name;
-    }
-
-    protected ProvinceEntity() {}
-
     @Override
     public String toString() {
-        return "ProvinceEntity={ig=" + id + ", " +
-                                "name=" + name + "}";
+        return "ProvinceEntity={id=" + id + ", name=" + name + "}";
     }
 
     @Override
     public boolean equals(final Object o) {
         return ((o instanceof ProvinceEntity province) &&
-                this.id != province.id &&
+                !Objects.equals(this.id, province.id) &&
                 this.name.equals(province.name)
         );
     }

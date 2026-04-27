@@ -4,6 +4,8 @@ import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
 import jakarta.persistence.DiscriminatorValue;
 
+import java.util.Date;
+
 @Entity
 @DiscriminatorValue("Citizen")
 public class CitizenEntity extends HumanEntity {
@@ -12,7 +14,16 @@ public class CitizenEntity extends HumanEntity {
 
     protected CitizenEntity() {
         super();
-        super.subclass = "Citizen";
+    }
+
+    public CitizenEntity(
+            final String fullName,
+            final Date birthDate,
+            final Date deathDate,
+            final String socialRole
+    ) {
+        super(fullName, birthDate, deathDate);
+        this.socialRole = socialRole;
     }
 
 
