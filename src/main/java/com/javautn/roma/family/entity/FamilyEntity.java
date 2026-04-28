@@ -1,5 +1,7 @@
 package com.javautn.roma.family.entity;
 
+import com.javautn.roma.province.dto.ProvinceResponseDto;
+import com.javautn.roma.province.entity.ProvinceEntity;
 import jakarta.persistence.*;
 
 @Entity
@@ -8,18 +10,17 @@ public class FamilyEntity {
 
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    long id;
+    private long id;
 
-    @Column(length = 50, nullable = false)
-    String name;
+    @Column(length = 50, nullable = false, unique = true)
+    private String name;
 
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "province_id", nullable = false)
+    private ProvinceEntity province;
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -29,6 +30,22 @@ public class FamilyEntity {
     public void setName(String name) {
         this.name = name;
     }
+
+    public ProvinceEntity getProvince() {
+        return province;
+    }
+
+    public void setProvince(ProvinceEntity province) {
+        this.province = province;
+    }
+
+    public FamilyEntity() {}
+
+    public FamilyEntity(String name,  ProvinceEntity province) {
+        this.name = name;
+        this.province = province;
+    }
+
 
     @Override
     public String toString() {

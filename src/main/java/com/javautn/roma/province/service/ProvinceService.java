@@ -25,15 +25,11 @@ public class ProvinceService {
         }
 
     public Optional<ProvinceResponseDto> getOneProvince(long id) {
-        Optional<ProvinceEntity> province = provinceRepository.findById(id);
-        return province.map(provinceEntity -> new ProvinceResponseDto(provinceEntity.getId(), provinceEntity.getName()));
+        return provinceRepository.findById(id)
+                .map(provinceEntity -> new ProvinceResponseDto(provinceEntity.getId(), provinceEntity.getName()));
     }
 
     public ProvinceResponseDto createProvince(ProvinceCreateDto dto) {
-        if (provinceRepository.existsByName(dto.getName())) {
-            return null;
-        }
-
         ProvinceEntity province = new ProvinceEntity(dto.getName());
         ProvinceEntity savedProvince = provinceRepository.save(province);
 
@@ -41,10 +37,6 @@ public class ProvinceService {
     }
 
     public Optional<ProvinceResponseDto> updateProvince(ProvinceCreateDto dto, long id) {
-        if (provinceRepository.existsByNameAndIdNot(dto.getName(), id)) {
-            return Optional.empty();
-        }
-
         return provinceRepository.findById(id)
                 .map(province -> {
                     province.setName(dto.getName());

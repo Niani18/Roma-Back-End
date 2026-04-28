@@ -43,5 +43,4 @@ public class ProvinceController {
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
-
 }
