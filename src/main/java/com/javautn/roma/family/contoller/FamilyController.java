@@ -4,6 +4,7 @@ import com.javautn.roma.family.dto.FamilyCreateDto;
 import com.javautn.roma.family.dto.FamilyResponseDto;
 import com.javautn.roma.family.entity.FamilyEntity;
 import com.javautn.roma.family.service.FamilyService;
+import com.javautn.roma.province.dto.ProvinceResponseDto;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -23,6 +24,11 @@ public class FamilyController {
     @GetMapping("/getAll")
     public ResponseEntity<List<FamilyResponseDto>> getAll() {
         return ResponseEntity.ok(familyService.getAllFamily());
+    }
+
+    @GetMapping("/getAllByProvince/{id}")
+    public ResponseEntity<List<FamilyResponseDto>> getAllProvinces(@PathVariable long id) {
+        return ResponseEntity.ok(familyService.getAllFamily(id));
     }
 
     @GetMapping("/getOne/{id}")

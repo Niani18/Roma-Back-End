@@ -20,20 +20,20 @@ public class ProvinceService {
 
     public List<ProvinceResponseDto> getAllProvinces() {
         return provinceRepository.findAll().stream()
-                .map(province -> new ProvinceResponseDto(province.getId(), province.getName()))
+                .map(province -> new ProvinceResponseDto(province.getId(), province.getName()/*, province.getFamilies())*/))
                 .toList();
         }
 
     public Optional<ProvinceResponseDto> getOneProvince(long id) {
         return provinceRepository.findById(id)
-                .map(provinceEntity -> new ProvinceResponseDto(provinceEntity.getId(), provinceEntity.getName()));
+                .map(provinceEntity -> new ProvinceResponseDto(provinceEntity.getId(), provinceEntity.getName()/*,  provinceEntity.getFamilies())*/));
     }
 
     public ProvinceResponseDto createProvince(ProvinceCreateDto dto) {
         ProvinceEntity province = new ProvinceEntity(dto.getName());
         ProvinceEntity savedProvince = provinceRepository.save(province);
 
-        return new ProvinceResponseDto(savedProvince.getId(), savedProvince.getName());
+        return new ProvinceResponseDto(savedProvince.getId(), savedProvince.getName()/*,  savedProvince.getFamilies()*/);
     }
 
     public Optional<ProvinceResponseDto> updateProvince(ProvinceCreateDto dto, long id) {
@@ -41,7 +41,7 @@ public class ProvinceService {
                 .map(province -> {
                     province.setName(dto.getName());
                     ProvinceEntity saved = provinceRepository.save(province);
-                    return new ProvinceResponseDto(saved.getId(), saved.getName());
+                    return new ProvinceResponseDto(saved.getId(), saved.getName()/*,  saved.getFamilies()*/);
                 });
     }
 

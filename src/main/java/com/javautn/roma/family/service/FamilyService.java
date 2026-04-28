@@ -29,12 +29,16 @@ public class FamilyService {
                 .toList();
     }
 
+    public List<FamilyResponseDto> getAllFamily(long id) {
+        return familyRepository.findByProvinceId(id).stream()
+                .map(family -> new FamilyResponseDto(family.getId(), family.getName(), ProvinceResponseDto.fromProvince(family.getProvince())))
+                .toList();
+    }
+
     public Optional<FamilyResponseDto> getOneFamily(Long id){
         return familyRepository.findById(id)
                 .map(fam -> new FamilyResponseDto(fam.getId(), fam.getName(),  ProvinceResponseDto.fromProvince(fam.getProvince())));
     }
-
-    // public List<FamilyResponseDto> getAllFamilyByProvince(Long provinceId){}
 
     public Optional<FamilyResponseDto> createFamily (FamilyCreateDto dto){
         Optional<ProvinceEntity> province = provinceRepository.findById(dto.getProvinceId());

@@ -11,7 +11,7 @@ public class FamilyResponseDto {
     public FamilyResponseDto(long id, String name,  ProvinceResponseDto province) {
         this.id = id;
         this.name = name;
-        this.province = new ProvinceResponseDto();
+        this.province = province;
     }
 
     public FamilyResponseDto() {}
