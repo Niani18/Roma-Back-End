@@ -1,6 +1,10 @@
 package com.javautn.roma.property.entity;
 
+import com.javautn.roma.holding.entity.HoldingEntity;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "property")
@@ -16,20 +20,18 @@ public class PropertyEntity {
     @Column(length = 50, nullable = false)
     private String description;
 
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
+    private final List<HoldingEntity> holdings = new ArrayList<>();
+
     protected PropertyEntity() {}
 
-    public PropertyEntity(long id, String name, String description) {
-        this.id = id;
+    public PropertyEntity(String name, String description) {
         this.name = name;
         this.description = description;
     }
 
     public long getId() {
         return id;
-    }
-
-    public void setId(long id) {
-        this.id = id;
     }
 
     public String getName() {
@@ -46,6 +48,10 @@ public class PropertyEntity {
 
     public void setDescription(String description) {
         this.description = description;
+    }
+
+    public List<HoldingEntity> getHoldings() {
+        return holdings;
     }
 
     @Override

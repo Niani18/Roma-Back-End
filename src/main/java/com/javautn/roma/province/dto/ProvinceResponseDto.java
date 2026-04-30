@@ -12,7 +12,7 @@ public class ProvinceResponseDto {
     private String name;
 //    private List<FamilyEntity> families = new ArrayList<>();
 
-    public ProvinceResponseDto() {}
+    protected ProvinceResponseDto() {}
 
     public ProvinceResponseDto(long id, String name/*,  List<FamilyEntity> families*/) {
         this.id = id;

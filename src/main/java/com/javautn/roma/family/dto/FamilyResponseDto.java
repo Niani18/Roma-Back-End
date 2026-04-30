@@ -14,7 +14,7 @@ public class FamilyResponseDto {
         this.province = province;
     }
 
-    public FamilyResponseDto() {}
+    protected FamilyResponseDto() {}
 
     public ProvinceResponseDto getProvince() {
         return province;

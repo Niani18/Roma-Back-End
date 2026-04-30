@@ -1,8 +1,11 @@
 package com.javautn.roma.family.entity;
 
-import com.javautn.roma.province.dto.ProvinceResponseDto;
+import com.javautn.roma.holding.entity.HoldingEntity;
 import com.javautn.roma.province.entity.ProvinceEntity;
 import jakarta.persistence.*;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @Entity
 @Table(name = "family")
@@ -18,6 +21,9 @@ public class FamilyEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "province_id", nullable = false)
     private ProvinceEntity province;
+
+    @OneToMany(mappedBy = "family", cascade = CascadeType.ALL)
+    private List<HoldingEntity> holding =  new ArrayList<>();
 
     public long getId() {
         return id;
@@ -39,11 +45,15 @@ public class FamilyEntity {
         this.province = province;
     }
 
-    public FamilyEntity() {}
+    protected FamilyEntity() {}
 
     public FamilyEntity(String name,  ProvinceEntity province) {
         this.name = name;
         this.province = province;
+    }
+
+    public List<HoldingEntity> getHoldings() {
+        return holding;
     }
 
 
