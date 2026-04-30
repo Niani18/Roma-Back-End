@@ -1,6 +1,9 @@
 package com.javautn.roma.property.entity;
 
+import com.javautn.roma.tax.entity.TaxAssignationEntity;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "property")
@@ -15,6 +18,9 @@ public class PropertyEntity {
 
     @Column(length = 50, nullable = false)
     private String description;
+
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
+    private List<TaxAssignationEntity> assignations;
 
     protected PropertyEntity() {}
 

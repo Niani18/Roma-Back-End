@@ -1,8 +1,10 @@
 package com.javautn.roma.family.entity;
 
-import com.javautn.roma.province.dto.ProvinceResponseDto;
 import com.javautn.roma.province.entity.ProvinceEntity;
+import com.javautn.roma.tax.entity.TaxAssignationEntity;
 import jakarta.persistence.*;
+
+import java.util.List;
 
 @Entity
 @Table(name = "family")
@@ -18,6 +20,9 @@ public class FamilyEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "province_id", nullable = false)
     private ProvinceEntity province;
+
+    @OneToMany(mappedBy = "family", cascade = CascadeType.ALL)
+    private List<TaxAssignationEntity> assignations;
 
     public long getId() {
         return id;
