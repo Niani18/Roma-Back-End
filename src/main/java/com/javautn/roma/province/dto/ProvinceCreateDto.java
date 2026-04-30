@@ -11,7 +11,7 @@ public class ProvinceCreateDto {
         this.name = name;
     }
 
-    public ProvinceCreateDto() {}
+    protected ProvinceCreateDto() {}
 
     public String getName() {
         return name;

@@ -11,7 +11,7 @@ public class FamilyCreateDto {
     @NotNull
     private long provinceId;
 
-    public FamilyCreateDto() {}
+    protected FamilyCreateDto() {}
 
     public FamilyCreateDto(String name, long provinceId) {
         this.name = name;

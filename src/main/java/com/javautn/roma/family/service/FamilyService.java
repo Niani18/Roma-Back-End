@@ -42,7 +42,6 @@ public class FamilyService {
 
     public Optional<FamilyResponseDto> createFamily (FamilyCreateDto dto){
         Optional<ProvinceEntity> province = provinceRepository.findById(dto.getProvinceId());
-
         if(province.isPresent()){
             FamilyEntity fam = new FamilyEntity(dto.getName(),  province.get());
             familyRepository.save(fam);
@@ -52,6 +51,9 @@ public class FamilyService {
             return  Optional.empty();
         }
     }
+
+    // por ahora no voy a usar update por no tener sentido de negocio
+    // agregar buscar todas las propieades de la familia
 
 
 }
