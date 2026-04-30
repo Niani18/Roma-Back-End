@@ -1,10 +1,11 @@
 package com.javautn.roma.human.entity;
 
-import jakarta.persistence.Column;
-import jakarta.persistence.Entity;
-import jakarta.persistence.DiscriminatorValue;
+import com.javautn.roma.crime.entity.CrimeEntity;
+import jakarta.persistence.*;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 @Entity
 @DiscriminatorValue("Citizen")
@@ -25,7 +26,12 @@ public class CitizenEntity extends HumanEntity {
         super(fullName, birthDate, deathDate);
         this.socialRole = socialRole;
     }
+    @OneToMany(mappedBy = "citizen", cascade = CascadeType.ALL)
+    private final List<CrimeEntity> crimes = new ArrayList<>();
 
+    public List<CrimeEntity> getCrimes() {
+        return crimes;
+    }
 
     @Override
     public String toString() {

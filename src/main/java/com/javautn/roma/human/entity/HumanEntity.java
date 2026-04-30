@@ -31,7 +31,7 @@ public abstract class HumanEntity {
     public String toString() {
         return "Human={ id=" + this.id +
                 " fullName='" + this.fullName + "'" +
-                " birthDate='" + this.deathDate.toString() + "'" +
+                " birthDate='" + this.birthDate.toString() + "'" +
                 " deathDate='" + this.deathDate.toString() + "' }";
     }
 
