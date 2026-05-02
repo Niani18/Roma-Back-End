@@ -2,13 +2,13 @@ package com.javautn.roma.human.entity;
 
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
-import jakarta.persistence.DiscriminatorValue;
+import jakarta.persistence.Table;
 
 import java.util.Date;
 
 
 @Entity
-@DiscriminatorValue("Slave")
+@Table(name = "slave_entity")
 public class SlaveEntity extends HumanEntity {
 
     @Column protected double price;
@@ -20,10 +20,9 @@ public class SlaveEntity extends HumanEntity {
     public SlaveEntity(
             final String fullName,
             final Date birthDate,
-            final Date deathDate,
             final double price
     ) {
-        super(fullName, birthDate, deathDate);
+        super(fullName, birthDate);
         this.price = price;
     }
 
@@ -31,8 +30,8 @@ public class SlaveEntity extends HumanEntity {
     public String toString() {
         return "Slave={ id="+ super.id +
                 " fullName='" + super.fullName + "'" +
-                " birthDate='" + super.birthDate.toString() + "'" +
-                " deathDate='" + super.deathDate.toString() + "' }";
+                " birthDate='" + super.birthDate + "'" +
+                " deathDate='" + super.deathDate + "' }";
     }
 
     @Override

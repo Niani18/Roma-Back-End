@@ -3,11 +3,9 @@ package com.javautn.roma.human.entity;
 import jakarta.persistence.*;
 
 import java.util.Date;
+import java.util.Objects;
 
-@Entity
-@Table(name = "human")
-@Inheritance(strategy = InheritanceType.JOINED)
-@DiscriminatorColumn(name = "subclass")
+@MappedSuperclass
 public abstract class HumanEntity {
 
     @Id
@@ -15,15 +13,14 @@ public abstract class HumanEntity {
     protected long id;
     @Column(length = 50, nullable = false)  protected String fullName;
     @Column( nullable = false )             protected Date birthDate;
-    @Column                                 protected Date deathDate;
+    @Column( nullable = true)               protected Date deathDate;
 
-    protected HumanEntity() {
-    }
+    protected HumanEntity() {}
 
-    public HumanEntity(String fullName, Date birthDate, Date deathDate) {
+    public HumanEntity(String fullName, Date birthDate) {
         this.fullName = fullName;
         this.birthDate = birthDate;
-        this.deathDate = deathDate;
+        this.deathDate = null;
     }
 
 
@@ -31,8 +28,8 @@ public abstract class HumanEntity {
     public String toString() {
         return "Human={ id=" + this.id +
                 " fullName='" + this.fullName + "'" +
-                " birthDate='" + this.birthDate.toString() + "'" +
-                " deathDate='" + this.deathDate.toString() + "' }";
+                " birthDate='" + this.birthDate + "'" +
+                " deathDate='" + this.deathDate + "' }";
     }
 
     @Override
@@ -41,7 +38,7 @@ public abstract class HumanEntity {
                 this.id != human.id &&
                 this.fullName.equals(human.fullName) &&
                 this.birthDate.equals(human.birthDate) &&
-                this.deathDate.equals(human.deathDate)
+                Objects.equals(this.deathDate, human.deathDate)
         );
     }
 

@@ -20,4 +20,14 @@ public interface FamilyRepository extends JpaRepository<FamilyEntity, Long> {
               and h.state = com.javautn.roma.holding.entity.HoldingState.ACTIVE
             """)
     Optional<FamilyEntity> findFamilyWithProperties(@Param("id") long id);
+
+    @Query("""
+            select distinct f
+            from FamilyEntity f
+            left join fetch f.province
+            left join fetch f.familyRol fr
+            left join fetch fr.citizen
+            where f.id = :id
+            """)
+    Optional<FamilyEntity> findFamilyWithMembers(@Param("id") long id);
 }

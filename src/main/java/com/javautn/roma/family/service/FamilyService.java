@@ -1,7 +1,6 @@
 package com.javautn.roma.family.service;
 
 import com.javautn.roma.family.dto.FamilyCreateDto;
-import com.javautn.roma.family.dto.FamilyResponseDto;
 import com.javautn.roma.family.dto.FamilyWithPropertiesDto;
 import com.javautn.roma.family.entity.FamilyEntity;
 import com.javautn.roma.family.repository.FamilyRepository;
@@ -26,21 +25,16 @@ public class FamilyService {
         this.provinceRepository = provinceRepository;
     }
 
-    public List<FamilyResponseDto> getAllFamily (){
-        return familyRepository.findAll().stream()
-                .map(family -> new FamilyResponseDto(family.getId(), family.getName(), ProvinceResponseDto.fromProvince(family.getProvince())))
-                .toList();
+    public List<FamilyEntity> getAllFamily (){
+        return familyRepository.findAll();
     }
 
-    public List<FamilyResponseDto> getAllFamily(long id) {
-        return familyRepository.findByProvinceId(id).stream()
-                .map(family -> new FamilyResponseDto(family.getId(), family.getName(), ProvinceResponseDto.fromProvince(family.getProvince())))
-                .toList();
+    public List<FamilyEntity> getAllFamily(long id) {
+        return familyRepository.findByProvinceId(id);
     }
 
-    public Optional<FamilyResponseDto> getOneFamily(Long id){
-        return familyRepository.findById(id)
-                .map(fam -> new FamilyResponseDto(fam.getId(), fam.getName(),  ProvinceResponseDto.fromProvince(fam.getProvince())));
+    public Optional<FamilyEntity> getOneFamily(Long id){
+        return familyRepository.findById(id);
     }
 
     public Optional<FamilyWithPropertiesDto> getOneFamilyWithProperties(long id) {
@@ -48,12 +42,16 @@ public class FamilyService {
                 .map(this::toFamilyWithPropertiesDto);
     }
 
-    public Optional<FamilyResponseDto> createFamily (FamilyCreateDto dto){
+    public Optional<FamilyEntity> getOneFamilyWithMembers(long id) {
+        return familyRepository.findFamilyWithMembers(id);
+    }
+
+    public Optional<FamilyEntity> createFamily (FamilyCreateDto dto){
         Optional<ProvinceEntity> province = provinceRepository.findById(dto.getProvinceId());
         if(province.isPresent()){
             FamilyEntity fam = new FamilyEntity(dto.getName(),  province.get());
             familyRepository.save(fam);
-            return Optional.of(new FamilyResponseDto(fam.getId(), fam.getName(),  ProvinceResponseDto.fromProvince(fam.getProvince())));
+            return Optional.of(fam);
         }
         else {
             return  Optional.empty();
@@ -61,7 +59,6 @@ public class FamilyService {
     }
 
 
-    // por ahora no voy a usar update por no tener sentido de negocio
 
     private FamilyWithPropertiesDto toFamilyWithPropertiesDto(FamilyEntity family) {
         List<PropertyResponseDto> properties = family.getHoldings().stream()

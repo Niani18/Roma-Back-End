@@ -12,7 +12,8 @@ import java.util.List;
 import java.util.Optional;
 
 //samu, cuando veas esto RequestEntity es para fromatear directamente el mensaje para el front a un http asi que porfa cambialo uwu
-// Gotcha bro, entiendo igual que es ResponseEntity
+//Gotcha bro, entiendo igual que es ResponseEntity
+//Si UnU
 
 @RestController
 @RequestMapping("/human/")
@@ -35,13 +36,22 @@ public class HumanController {
     }
 
     @GetMapping("citizen/{id}")
-    public ResponseEntity<CitizenResponseDTO> getCitizen(@PathVariable("id") final long id) {
+    public ResponseEntity<CitizenResponseDTO> getCitizen(@PathVariable final long id) {
         return ResponseEntity.of(humanService.getCitizen(id).map(CitizenResponseDTO::fromCitizen));
     }
 
     @GetMapping("slave/{id}")
-    public ResponseEntity<SlaveResponseDTO> getSlave(@PathVariable("id") final long id) {
+    public ResponseEntity<SlaveResponseDTO> getSlave(@PathVariable final long id) {
         return ResponseEntity.of(humanService.getSlave(id).map(SlaveResponseDTO::fromSlave));
+    }
+
+    @GetMapping("/getOneWithFamily/{id}")
+    public ResponseEntity<CitizenWithFamilyRoleDto> getOneWithFamily(@PathVariable long id) {
+        return humanService.getCitizenByFamily(id)
+                .map(CitizenWithFamilyRoleDto::fromCitizenWith)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+
     }
 
     @PostMapping("citizen")
@@ -60,7 +70,7 @@ public class HumanController {
 
     @PutMapping("citizen/{id}")
     public ResponseEntity<CitizenResponseDTO> updateCitizen(
-            @PathVariable("id") final long id,
+            @PathVariable final long id,
             @Valid @RequestBody final CitizenCreateDTO postdto) {
         final CitizenEntity newCitizen = postdto.newCitizen();
         return ResponseEntity.of(humanService.updateCitizen(id, newCitizen).map(CitizenResponseDTO::fromCitizen));
@@ -68,14 +78,22 @@ public class HumanController {
 
     @PutMapping("slave/{id}")
     public ResponseEntity<SlaveResponseDTO> updateSlave(
-            @PathVariable("id") final long id,
+            @PathVariable final long id,
             @Valid @RequestBody final SlaveCreateDTO postdto) {
         final SlaveEntity newSlave = postdto.newSlave();
         return ResponseEntity.of(humanService.updateSlave(id, newSlave).map(SlaveResponseDTO::fromSlave));
     }
 
+    @PatchMapping("citizen/death/{id}")
+    public ResponseEntity<CitizenResponseDTO> setDeathDate(@PathVariable long id) {
+        return humanService.setDeathDate(id)
+                .map(CitizenResponseDTO::fromCitizen)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @DeleteMapping("citizen/{id}")
-    public ResponseEntity<CitizenResponseDTO> deleteCitizen(@PathVariable("id") final long id) {
+    public ResponseEntity<CitizenResponseDTO> deleteCitizen(@PathVariable final long id) {
         final Optional<CitizenEntity> citizen = humanService.getCitizen(id);
         humanService.deleteCitizen(id);
         return ResponseEntity.of(citizen.map(CitizenResponseDTO::fromCitizen));

@@ -9,7 +9,7 @@ public class FamilyCreateDto {
     private String name;
 
     @NotNull
-    private long provinceId;
+    private Long provinceId;
 
     protected FamilyCreateDto() {}
 
@@ -26,11 +26,11 @@ public class FamilyCreateDto {
         this.name = name;
     }
 
-    public long getProvinceId() {
+    public Long getProvinceId() {
         return provinceId;
     }
 
-    public void setProvinceId(long provinceId) {
+    public void setProvinceId(Long provinceId) {
         this.provinceId = provinceId;
     }
 

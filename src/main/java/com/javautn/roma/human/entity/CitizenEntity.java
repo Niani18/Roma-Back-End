@@ -1,6 +1,7 @@
 package com.javautn.roma.human.entity;
 
 import com.javautn.roma.crime.entity.CrimeEntity;
+import com.javautn.roma.familyRol.entity.FamilyRolEntity;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -8,7 +9,7 @@ import java.util.Date;
 import java.util.List;
 
 @Entity
-@DiscriminatorValue("Citizen")
+@Table(name = "citizen_entity")
 public class CitizenEntity extends HumanEntity {
 
     @Column( length = 50, nullable = false ) private String socialRole;
@@ -20,25 +21,31 @@ public class CitizenEntity extends HumanEntity {
     public CitizenEntity(
             final String fullName,
             final Date birthDate,
-            final Date deathDate,
             final String socialRole
     ) {
-        super(fullName, birthDate, deathDate);
+        super(fullName, birthDate);
         this.socialRole = socialRole;
     }
     @OneToMany(mappedBy = "citizen", cascade = CascadeType.ALL)
     private final List<CrimeEntity> crimes = new ArrayList<>();
 
+    @OneToMany(mappedBy = "citizen",  cascade = CascadeType.ALL)
+    private final List<FamilyRolEntity> familyRol = new ArrayList<>();
+
     public List<CrimeEntity> getCrimes() {
         return crimes;
+    }
+
+    public  List<FamilyRolEntity> getFamilyRol() {
+        return familyRol;
     }
 
     @Override
     public String toString() {
         return "Citizen={ id" + super.id +
                 " fullName='" + super.fullName + "'" +
-                " birthDate='" + super.birthDate.toString() + "'" +
-                " deathDate='" + super.deathDate.toString() + "'" +
+                " birthDate='" + super.birthDate + "'" +
+                " deathDate='" + super.deathDate + "'" +
                 " socialRole=" + this.socialRole + " }";
     }
 

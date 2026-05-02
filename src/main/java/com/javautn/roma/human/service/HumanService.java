@@ -1,69 +1,100 @@
 package com.javautn.roma.human.service;
 
-import com.javautn.roma.human.dto.CitizenResponseDTO;
+import com.javautn.roma.familyRol.repository.FamilyRolRepository;
 import com.javautn.roma.human.entity.CitizenEntity;
 import com.javautn.roma.human.entity.SlaveEntity;
-import com.javautn.roma.human.repository.HumanRepository;
+import com.javautn.roma.human.repository.CitizenRepository;
+import com.javautn.roma.human.repository.SlaveRepository;
+import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
 @Service
 public class HumanService {
 
-    final HumanRepository humanRepo;
+    private final CitizenRepository citizenRepository;
+    private final SlaveRepository slaveRepository;
+    private final FamilyRolRepository familyRolRepository;
 
-    public HumanService(final HumanRepository humanRepo) {
-        this.humanRepo = humanRepo;
+    public HumanService(final CitizenRepository citizenRepository, final SlaveRepository slaveRepository,  final FamilyRolRepository familyRolRepository) {
+        this.citizenRepository = citizenRepository;
+        this.slaveRepository = slaveRepository;
+        this.familyRolRepository = familyRolRepository;
     }
 
     public List<CitizenEntity> getAllCitizen() {
-        return new ArrayList<CitizenEntity>();
+        return citizenRepository.findAll();
     }
 
     public List<SlaveEntity> getAllSlaves() {
-        return new ArrayList<SlaveEntity>();
+        return slaveRepository.findAll();
     }
 
     public Optional<CitizenEntity> getCitizen(final long id) {
-        return humanRepo.findById(id).map(h -> (CitizenEntity) h);
+        return citizenRepository.findById(id);
     }
 
     public Optional<SlaveEntity> getSlave(final long id) {
-        return humanRepo.findById(id).map(h -> (SlaveEntity) h);
+        return slaveRepository.findById(id);
     }
 
     public Optional<CitizenEntity> createCitizen(CitizenEntity citizen) {
-        final CitizenEntity newCitizen = humanRepo.saveAndFlush(citizen);
+        final CitizenEntity newCitizen = citizenRepository.saveAndFlush(citizen);
         return Optional.of(newCitizen);
     }
 
     public Optional<SlaveEntity> createSlave(SlaveEntity slave) {
-        final SlaveEntity newSlave = humanRepo.saveAndFlush(slave);
+        final SlaveEntity newSlave = slaveRepository.saveAndFlush(slave);
         return Optional.of(newSlave);
     }
 
     public Optional<CitizenEntity> updateCitizen(final long id, final CitizenEntity citizen) {
-        if (!humanRepo.existsById(id)) return Optional.empty();
+        if (!citizenRepository.existsById(id)) return Optional.empty();
         citizen.setId(id);
-        return Optional.of(humanRepo.saveAndFlush(citizen));
+        return Optional.of(citizenRepository.saveAndFlush(citizen));
     }
 
     public Optional<SlaveEntity> updateSlave(final long id, final SlaveEntity slave) {
-        if (!humanRepo.existsById(id)) return Optional.empty();
+        if (!slaveRepository.existsById(id)) return Optional.empty();
         slave.setId(id);
-        return Optional.of(humanRepo.saveAndFlush(slave));
+        return Optional.of(slaveRepository.saveAndFlush(slave));
     }
 
     public void deleteCitizen(final long id) {
-        humanRepo.deleteById(id);
-        humanRepo.flush();
+        if (!citizenRepository.existsById(id)) return;
+        citizenRepository.deleteById(id);
+        citizenRepository.flush();
     }
 
     public void deleteSlave(final long id) {
-        humanRepo.deleteById(id);
-        humanRepo.flush();
+        if (!slaveRepository.existsById(id)) return;
+        slaveRepository.deleteById(id);
+        slaveRepository.flush();
+    }
+
+    @Transactional
+    public Optional<CitizenEntity> setDeathDate(final long id) {
+        Optional<CitizenEntity> nuevoFiambre = citizenRepository.findById(id);
+
+        if (nuevoFiambre.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Date deathDate = new Date();
+        CitizenEntity citizen = nuevoFiambre.get();
+
+        citizen.setDeathDate(deathDate);
+
+        familyRolRepository.findByCitizenId(citizen.getId())
+                .forEach(familyRol -> familyRol.setDateOfUnjoining(deathDate));
+
+        return Optional.of(citizenRepository.save(citizen));
+    }
+
+    public Optional<CitizenEntity> getCitizenByFamily(long id) {
+        return citizenRepository.findCitizenWithFamilies(id);
     }
 }
