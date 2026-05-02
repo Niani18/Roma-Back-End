@@ -123,4 +123,8 @@ public class TaxAssignationEntity {
     public void setId(long id) {
         this.id = id;
     }
+
+    public TaxEntity getTax() {
+        return tax;
+    }
 }
