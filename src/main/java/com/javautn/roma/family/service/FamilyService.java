@@ -2,8 +2,11 @@ package com.javautn.roma.family.service;
 
 import com.javautn.roma.family.dto.FamilyCreateDto;
 import com.javautn.roma.family.dto.FamilyResponseDto;
+import com.javautn.roma.family.dto.FamilyWithPropertiesDto;
 import com.javautn.roma.family.entity.FamilyEntity;
 import com.javautn.roma.family.repository.FamilyRepository;
+import com.javautn.roma.holding.entity.HoldingEntity;
+import com.javautn.roma.property.dto.PropertyResponseDto;
 import com.javautn.roma.province.dto.ProvinceResponseDto;
 import com.javautn.roma.province.entity.ProvinceEntity;
 import com.javautn.roma.province.repository.ProvinceRepository;
@@ -40,6 +43,11 @@ public class FamilyService {
                 .map(fam -> new FamilyResponseDto(fam.getId(), fam.getName(),  ProvinceResponseDto.fromProvince(fam.getProvince())));
     }
 
+    public Optional<FamilyWithPropertiesDto> getOneFamilyWithProperties(long id) {
+        return familyRepository.findFamilyWithProperties(id)
+                .map(this::toFamilyWithPropertiesDto);
+    }
+
     public Optional<FamilyResponseDto> createFamily (FamilyCreateDto dto){
         Optional<ProvinceEntity> province = provinceRepository.findById(dto.getProvinceId());
         if(province.isPresent()){
@@ -52,8 +60,22 @@ public class FamilyService {
         }
     }
 
-    // por ahora no voy a usar update por no tener sentido de negocio
-    // agregar buscar todas las propieades de la familia
 
+    // por ahora no voy a usar update por no tener sentido de negocio
+
+    private FamilyWithPropertiesDto toFamilyWithPropertiesDto(FamilyEntity family) {
+        List<PropertyResponseDto> properties = family.getHoldings().stream()
+                .map(HoldingEntity::getProperty)
+                .distinct()
+                .map(PropertyResponseDto::fromProperty)
+                .toList();
+
+        return new FamilyWithPropertiesDto(
+                family.getId(),
+                family.getName(),
+                ProvinceResponseDto.fromProvince(family.getProvince()),
+                properties
+        );
+    }
 
 }

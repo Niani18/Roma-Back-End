@@ -4,7 +4,6 @@ import com.javautn.roma.family.entity.FamilyEntity;
 import com.javautn.roma.property.entity.PropertyEntity;
 import jakarta.persistence.*;
 
-import java.math.BigDecimal;
 import java.util.Date;
 
 @Entity
@@ -24,18 +23,23 @@ public class HoldingEntity {
     private FamilyEntity family;
 
     @Column(nullable = false)
-    private BigDecimal price;
+    private double price;
 
     @Column(nullable = false)
     private Date date;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, columnDefinition = "varchar(20) default 'ACTIVE'")
+    private HoldingState state;
+
     protected HoldingEntity() {}
 
-    public HoldingEntity(PropertyEntity property,  FamilyEntity family, BigDecimal price, Date date) {
+    public HoldingEntity(PropertyEntity property,  FamilyEntity family, double price, Date date) {
         this.property = property;
         this.date = new Date();
         this.family = family;
         this.price = price;
+        this.state = HoldingState.ACTIVE;
     }
 
     public Long getId() {
@@ -58,11 +62,11 @@ public class HoldingEntity {
         this.family = family;
     }
 
-    public BigDecimal getPrice() {
+    public double getPrice() {
         return price;
     }
 
-    public void setPrice(BigDecimal price) {
+    public void setPrice(double price) {
         this.price = price;
     }
 
@@ -72,6 +76,14 @@ public class HoldingEntity {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+    public HoldingState getState() {
+        return state;
+    }
+
+    public void setState(HoldingState state) {
+        this.state = state;
     }
 
 }

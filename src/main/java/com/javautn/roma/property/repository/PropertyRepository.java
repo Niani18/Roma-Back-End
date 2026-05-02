@@ -14,8 +14,23 @@ public interface PropertyRepository extends JpaRepository<PropertyEntity, Long> 
             from PropertyEntity p
             left join fetch p.holdings h
             left join fetch h.family
+            where h is null
+               or h.state = com.javautn.roma.holding.entity.HoldingState.ACTIVE
             """)
-    public List<PropertyEntity> findAllPropertyWithOwners();
+    List<PropertyEntity> findAllPropertyWithOwners();
+
+    @Query("""
+            select distinct p
+            from PropertyEntity p
+            left join fetch p.holdings h
+            left join fetch h.family
+            where p.id = :id
+              and (
+                  h is null
+                  or h.state = com.javautn.roma.holding.entity.HoldingState.ACTIVE
+              )
+            """)
+    Optional<PropertyEntity> findPropertyWithOwners(@Param("id") long id);
 
     @Query("""
             select distinct p
@@ -24,5 +39,5 @@ public interface PropertyRepository extends JpaRepository<PropertyEntity, Long> 
             left join fetch h.family
             where p.id = :id
             """)
-    public Optional<PropertyEntity> findPropertyWithOwners(@Param("id") long id);
+    Optional<PropertyEntity> findAllHoldingsWithOwners(@Param("id") long id);
 }

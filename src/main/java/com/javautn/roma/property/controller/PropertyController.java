@@ -2,6 +2,7 @@ package com.javautn.roma.property.controller;
 
 import com.javautn.roma.property.dto.PropertyCreateDto;
 import com.javautn.roma.property.dto.PropertyResponseDto;
+import com.javautn.roma.property.dto.PropertyWithAllHoldingsDto;
 import com.javautn.roma.property.dto.PropertyWithOwnersDto;
 import com.javautn.roma.property.entity.PropertyEntity;
 import com.javautn.roma.property.service.PropertyService;
@@ -29,8 +30,15 @@ public class PropertyController {
     }
 
     @GetMapping("/getOneWithOwners/{id}")
-    public ResponseEntity<PropertyWithOwnersDto> getOneWithOwners(@PathVariable long id) {
+    public ResponseEntity<PropertyWithOwnersDto> getOneWithOwner(@PathVariable long id) {
         return propertyService.findPropertyWithOwners(id)
+                .map(ResponseEntity::ok)
+                .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/getAllHolding/{id}")
+    public ResponseEntity<PropertyWithAllHoldingsDto> getAllHolding(@PathVariable long id) {
+        return propertyService.findOnePropertyWithAllHoldings(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

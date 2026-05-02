@@ -56,7 +56,6 @@ public class FamilyEntity {
         return holding;
     }
 
-
     @Override
     public String toString() {
         return "FamilyEntity{" +
