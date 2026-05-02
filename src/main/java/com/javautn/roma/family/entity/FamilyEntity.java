@@ -2,6 +2,7 @@ package com.javautn.roma.family.entity;
 
 import com.javautn.roma.holding.entity.HoldingEntity;
 import com.javautn.roma.province.entity.ProvinceEntity;
+import com.javautn.roma.tax.entity.TaxAssignationEntity;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -21,6 +22,9 @@ public class FamilyEntity {
     @ManyToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "province_id", nullable = false)
     private ProvinceEntity province;
+
+    @OneToMany(mappedBy = "family", cascade = CascadeType.ALL)
+    private List<TaxAssignationEntity> assignations;
 
     @OneToMany(mappedBy = "family", cascade = CascadeType.ALL)
     private List<HoldingEntity> holding =  new ArrayList<>();

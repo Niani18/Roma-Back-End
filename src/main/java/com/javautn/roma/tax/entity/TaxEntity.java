@@ -2,6 +2,8 @@ package com.javautn.roma.tax.entity;
 
 import jakarta.persistence.*;
 
+import java.util.List;
+
 @Entity
 @Table(name = "tax")
 public class TaxEntity {
@@ -12,6 +14,9 @@ public class TaxEntity {
 
     @Column(nullable = false, length = 64) private String name;
     @Column(nullable = false) private String description;
+
+    @OneToMany(mappedBy = "tax", cascade = CascadeType.ALL)
+    private List<TaxAssignationEntity> assignations;
 
     public TaxEntity() {
         this.id = 0;

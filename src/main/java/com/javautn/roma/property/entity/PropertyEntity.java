@@ -1,5 +1,7 @@
 package com.javautn.roma.property.entity;
 
+
+import com.javautn.roma.tax.entity.TaxAssignationEntity;
 import com.javautn.roma.holding.entity.HoldingEntity;
 import jakarta.persistence.*;
 
@@ -21,7 +23,11 @@ public class PropertyEntity {
     private String description;
 
     @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
+    private List<TaxAssignationEntity> assignations;
+
+    @OneToMany(mappedBy = "property", cascade = CascadeType.ALL)
     private final List<HoldingEntity> holdings = new ArrayList<>();
+
 
     protected PropertyEntity() {}
 
