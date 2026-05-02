@@ -59,6 +59,8 @@ public class FamilyEntity {
     public List<HoldingEntity> getHoldings() {
         return holding;
     }
+    
+    public List<TaxAssignationEntity> getTaxAssignations() { return assignations; }
 
 
     @Override
