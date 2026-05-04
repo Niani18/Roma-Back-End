@@ -43,9 +43,9 @@ public class FamilyTaxAssignationsResponseDTO {
         this.listedTaxes = listedTaxes;
     }
 
-    public static FamilyTaxAssignationsResponseDTO fromFamily(FamilyEntity family, List<TaxAssignationResponseDTO> assignations) {
+    public static FamilyTaxAssignationsResponseDTO fromFamily(FamilyEntity family) {
         return new FamilyTaxAssignationsResponseDTO(
-                assignations,
+                family.getTaxAssignations().stream().map(TaxAssignationResponseDTO::fromTaxAssignation).toList(),
                 family.getName(),
                 family.getId()
         );

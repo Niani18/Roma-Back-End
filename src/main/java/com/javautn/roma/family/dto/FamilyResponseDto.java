@@ -31,9 +31,12 @@ public class FamilyResponseDto {
         return name;
     }
 
-    public static FamilyResponseDto fromFamily(FamilyEntity fe) {
-        return (fe == null) ? null :
-                new FamilyResponseDto(fe.getId(), fe.getName(), ProvinceResponseDto.fromProvince(fe.getProvince()));
-    }
 
+    public static FamilyResponseDto fromFamily(final FamilyEntity family) {
+        return new FamilyResponseDto (
+                family.getId(),
+                family.getName(),
+                ProvinceResponseDto.fromProvince(family.getProvince())
+        );
+    }
 }

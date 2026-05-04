@@ -63,6 +63,8 @@ public class FamilyEntity {
     public List<HoldingEntity> getHoldings() {
         return holding;
     }
+    
+    public List<TaxAssignationEntity> getTaxAssignations() { return assignations; }
 
     public List<FamilyRolEntity> getFamilyRol() {
         return familyRol;

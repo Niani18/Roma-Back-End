@@ -25,11 +25,11 @@ public class FamilyService {
         this.provinceRepository = provinceRepository;
     }
 
-    public List<FamilyEntity> getAllFamily (){
+    public List<FamilyEntity> getAllFamilies(){
         return familyRepository.findAll();
     }
 
-    public List<FamilyEntity> getAllFamily(long id) {
+    public List<FamilyEntity> getFamiliesByProvince(long id) {
         return familyRepository.findByProvinceId(id);
     }
 
@@ -37,10 +37,6 @@ public class FamilyService {
         return familyRepository.findById(id);
     }
 
-    public Optional<FamilyWithPropertiesDto> getOneFamilyWithProperties(long id) {
-        return familyRepository.findFamilyWithProperties(id)
-                .map(this::toFamilyWithPropertiesDto);
-    }
 
     public Optional<FamilyEntity> getOneFamilyWithMembers(long id) {
         return familyRepository.findFamilyWithMembers(id);
@@ -48,31 +44,16 @@ public class FamilyService {
 
     public Optional<FamilyEntity> createFamily (FamilyCreateDto dto){
         Optional<ProvinceEntity> province = provinceRepository.findById(dto.getProvinceId());
-        if(province.isPresent()){
-            FamilyEntity fam = new FamilyEntity(dto.getName(),  province.get());
-            familyRepository.save(fam);
-            return Optional.of(fam);
+        if(province.isPresent()) {
+            FamilyEntity fam = new FamilyEntity(dto.getName(), province.get());
+            return Optional.of(familyRepository.saveAndFlush(fam));
         }
         else {
             return  Optional.empty();
         }
     }
 
-
-
-    private FamilyWithPropertiesDto toFamilyWithPropertiesDto(FamilyEntity family) {
-        List<PropertyResponseDto> properties = family.getHoldings().stream()
-                .map(HoldingEntity::getProperty)
-                .distinct()
-                .map(PropertyResponseDto::fromProperty)
-                .toList();
-
-        return new FamilyWithPropertiesDto(
-                family.getId(),
-                family.getName(),
-                ProvinceResponseDto.fromProvince(family.getProvince()),
-                properties
-        );
-    }
+    // por ahora no voy a usar update por no tener sentido de negocio
+    // agregar buscar todas las propieades de la familia
 
 }
