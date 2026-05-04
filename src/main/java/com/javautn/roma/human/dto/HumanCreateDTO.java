@@ -1,20 +1,23 @@
 package com.javautn.roma.human.dto;
 
 
+import com.fasterxml.jackson.annotation.JsonFormat;
 import jakarta.validation.constraints.NotNull;
 import jakarta.validation.constraints.NotBlank;
 
 import java.util.Date;
 
 public class HumanCreateDTO {
-    @NotBlank final String fullName;
-    @NotNull private final Date birthDate;
-    private final Date deathDate;
+    @NotBlank private String fullName;
+    @NotNull
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
+    private Date birthDate;
 
-    public HumanCreateDTO(final String fullName, final Date birthDate, final Date deathDate) {
+    protected HumanCreateDTO() {}
+
+    public HumanCreateDTO(final String fullName, final Date birthDate) {
         this.fullName = fullName;
         this.birthDate = birthDate;
-        this.deathDate = deathDate;
     }
 
     public String getFullName() {
@@ -25,7 +28,12 @@ public class HumanCreateDTO {
         return birthDate;
     }
 
-    public Date getDeathDate() {
-        return deathDate;
+    public void setFullName(String fullName) {
+        this.fullName = fullName;
     }
+
+    public void setBirthDate(Date birthDate) {
+        this.birthDate = birthDate;
+    }
+
 }

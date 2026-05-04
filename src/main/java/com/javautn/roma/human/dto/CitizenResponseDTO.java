@@ -1,7 +1,6 @@
 package com.javautn.roma.human.dto;
 
 import com.javautn.roma.human.entity.CitizenEntity;
-import com.javautn.roma.human.entity.HumanEntity;
 
 import java.util.Date;
 

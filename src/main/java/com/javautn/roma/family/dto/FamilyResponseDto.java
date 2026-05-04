@@ -1,5 +1,6 @@
 package com.javautn.roma.family.dto;
 
+import com.javautn.roma.family.entity.FamilyEntity;
 import com.javautn.roma.province.dto.ProvinceResponseDto;
 
 public class FamilyResponseDto {
@@ -28,6 +29,11 @@ public class FamilyResponseDto {
 
     public String getName() {
         return name;
+    }
+
+    public static FamilyResponseDto fromFamily(FamilyEntity fe) {
+        return (fe == null) ? null :
+                new FamilyResponseDto(fe.getId(), fe.getName(), ProvinceResponseDto.fromProvince(fe.getProvince()));
     }
 
 }

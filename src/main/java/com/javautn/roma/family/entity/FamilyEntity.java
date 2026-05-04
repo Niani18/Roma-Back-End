@@ -1,5 +1,6 @@
 package com.javautn.roma.family.entity;
 
+import com.javautn.roma.familyRol.entity.FamilyRolEntity;
 import com.javautn.roma.holding.entity.HoldingEntity;
 import com.javautn.roma.province.entity.ProvinceEntity;
 import com.javautn.roma.tax.entity.TaxAssignationEntity;
@@ -27,7 +28,10 @@ public class FamilyEntity {
     private List<TaxAssignationEntity> assignations;
 
     @OneToMany(mappedBy = "family", cascade = CascadeType.ALL)
-    private List<HoldingEntity> holding =  new ArrayList<>();
+    private final List<HoldingEntity> holding =  new ArrayList<>();
+
+    @OneToMany(mappedBy = "family", cascade = CascadeType.ALL)
+    private final List<FamilyRolEntity> familyRol = new ArrayList<>();
 
     public long getId() {
         return id;
@@ -60,6 +64,9 @@ public class FamilyEntity {
         return holding;
     }
 
+    public List<FamilyRolEntity> getFamilyRol() {
+        return familyRol;
+    }
 
     @Override
     public String toString() {

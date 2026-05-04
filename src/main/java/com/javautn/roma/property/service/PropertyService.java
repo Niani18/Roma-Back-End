@@ -4,6 +4,7 @@ import com.javautn.roma.family.entity.FamilyEntity;
 import com.javautn.roma.holding.entity.HoldingEntity;
 import com.javautn.roma.property.dto.PropertyCreateDto;
 import com.javautn.roma.property.dto.PropertyOwnerDto;
+import com.javautn.roma.property.dto.PropertyWithAllHoldingsDto;
 import com.javautn.roma.property.dto.PropertyWithOwnersDto;
 import com.javautn.roma.property.entity.PropertyEntity;
 import com.javautn.roma.property.repository.PropertyRepository;
@@ -45,6 +46,11 @@ public class PropertyService {
         return propertyRepository.save(newEntity);
     }
 
+    public Optional<PropertyWithAllHoldingsDto> findOnePropertyWithAllHoldings (long id) {
+        return propertyRepository.findAllHoldingsWithOwners(id)
+                .map(this::toPropertyWithAllHoldingsDto);
+    }
+
     private PropertyWithOwnersDto toPropertyWithOwnersDto(PropertyEntity property) {
         PropertyOwnerDto owner = property.getHoldings().stream()
                 .map(this::toPropertyOwnerDto)
@@ -59,12 +65,27 @@ public class PropertyService {
         );
     }
 
+    private PropertyWithAllHoldingsDto toPropertyWithAllHoldingsDto(PropertyEntity property) {
+        List<PropertyOwnerDto> owner = property.getHoldings().stream()
+                .map(this::toPropertyOwnerDto)
+                .toList();
+
+        return new PropertyWithAllHoldingsDto(
+                property.getId(),
+                property.getName(),
+                property.getDescription(),
+                owner
+        );
+    }
+
     private PropertyOwnerDto toPropertyOwnerDto(HoldingEntity holding) {
         FamilyEntity family = holding.getFamily();
         return new PropertyOwnerDto(
                 holding.getId(),
                 family.getId(),
-                family.getName()
+                family.getName(),
+                holding.getPrice(),
+                holding.getDate()
         );
     }
 

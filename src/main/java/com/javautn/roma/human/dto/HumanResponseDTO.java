@@ -1,9 +1,5 @@
 package com.javautn.roma.human.dto;
 
-import com.javautn.roma.human.entity.CitizenEntity;
-import com.javautn.roma.human.entity.HumanEntity;
-import com.javautn.roma.human.entity.SlaveEntity;
-
 import java.util.Date;
 
 public class HumanResponseDTO {

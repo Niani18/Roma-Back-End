@@ -1,5 +1,7 @@
 package com.javautn.roma.property.dto;
 
+import com.javautn.roma.property.entity.PropertyEntity;
+
 public class PropertyResponseDto {
 
     long id;
@@ -37,4 +39,7 @@ public class PropertyResponseDto {
         this.description = description;
     }
 
+    public static PropertyResponseDto fromProperty(PropertyEntity property) {
+        return new PropertyResponseDto(property.getId(), property.getName(), property.getDescription());
+    }
 }

@@ -2,18 +2,17 @@ package com.javautn.roma.human.dto;
 
 import com.javautn.roma.human.entity.SlaveEntity;
 
-import java.util.Date;
-
 public class SlaveCreateDTO extends HumanCreateDTO {
 
-    private final float price;
+    private float price;
+
+    protected SlaveCreateDTO() {}
 
     public SlaveCreateDTO(
             final String fullName,
-            final Date birthDate,
-            final Date deathDate,
+            final java.util.Date birthDate,
             final float price) {
-        super(fullName, birthDate, deathDate);
+        super(fullName, birthDate);
         this.price = price;
     }
 
@@ -21,11 +20,14 @@ public class SlaveCreateDTO extends HumanCreateDTO {
         return price;
     }
 
+    public void setPrice(float price) {
+        this.price = price;
+    }
+
     public SlaveEntity newSlave() {
         return new SlaveEntity(
                 super.getFullName(),
                 super.getBirthDate(),
-                super.getDeathDate(),
                 this.price
         );
     }
