@@ -8,7 +8,9 @@ public class CrimeCreateDto {
     @NotBlank
     private String description;
 
-    public CrimeCreateDto(String description) {this.description = description;}
+    public CrimeCreateDto(String description) {
+        this.description = description;
+    }
 
     public CrimeCreateDto() {}
 

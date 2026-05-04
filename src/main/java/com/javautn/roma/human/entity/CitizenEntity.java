@@ -1,6 +1,6 @@
 package com.javautn.roma.human.entity;
 
-import com.javautn.roma.crime.entity.CrimeEntity;
+import com.javautn.roma.legalCase.entity.LegalCaseEntity;
 import jakarta.persistence.*;
 
 import java.util.ArrayList;
@@ -27,10 +27,10 @@ public class CitizenEntity extends HumanEntity {
         this.socialRole = socialRole;
     }
     @OneToMany(mappedBy = "citizen", cascade = CascadeType.ALL)
-    private final List<CrimeEntity> crimes = new ArrayList<>();
+    private final List<LegalCaseEntity> legalCases = new ArrayList<>();
 
-    public List<CrimeEntity> getCrimes() {
-        return crimes;
+    public List<LegalCaseEntity> getLegalCases() {
+        return legalCases;
     }
 
     @Override

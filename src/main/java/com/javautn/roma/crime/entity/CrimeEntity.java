@@ -1,12 +1,14 @@
 package com.javautn.roma.crime.entity;
 
-import com.javautn.roma.human.entity.CitizenEntity;
+import com.javautn.roma.legalCase.entity.LegalCaseEntity;
 import jakarta.persistence.*;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Objects;
 
 @Entity()
-//@Table(description = "crime")
+@Table(name = "crime")
 public class CrimeEntity {
 
     @Id
@@ -16,11 +18,11 @@ public class CrimeEntity {
     @Column(length = 100, nullable = false)
     private String description;
 
-    @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "citizen_id", nullable = false)
-    private CitizenEntity citizen;
+    @OneToMany(mappedBy = "crime", cascade = CascadeType.ALL)
+    private final List<LegalCaseEntity> legalCases = new ArrayList<>();
 
     public CrimeEntity(String description) {
+        this.description = description;
     }
 
     public long getId() {return id;}
@@ -29,25 +31,15 @@ public class CrimeEntity {
 
     public void setDescription(String description) {this.description = description;}
 
-    public CitizenEntity getCitizen() {
-
-        return citizen;
-    }
-
-    public void setCitizen(CitizenEntity citizen) {
-        this.citizen = citizen;
+    public List<LegalCaseEntity> getLegalCases() {
+        return legalCases;
     }
 
     protected CrimeEntity() {}
 
-    public  CrimeEntity(String description, CitizenEntity citizen) {
-        this.description = description;
-        this.citizen = citizen;
-    }
-
     @Override
     public String toString() {
-        return "Crime Entity{" + "id=" + id + ", description=" + description + ", citizen=" + citizen + '}';}
+        return "Crime Entity{" + "id=" + id + ", description=" + description + '}';}
 
     @Override
     public boolean equals(Object o) {
