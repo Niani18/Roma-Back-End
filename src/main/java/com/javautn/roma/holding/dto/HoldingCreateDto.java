@@ -15,7 +15,6 @@ public class HoldingCreateDto {
 
     public HoldingCreateDto(double price, long propertyId, long familyId) {
         this.price = price;
-        this.date = new Date();
         this.propertyId = propertyId;
         this.familyId = familyId;
     }

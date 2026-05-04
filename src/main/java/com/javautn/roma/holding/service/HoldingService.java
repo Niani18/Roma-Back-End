@@ -11,6 +11,7 @@ import com.javautn.roma.property.repository.PropertyRepository;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -37,7 +38,8 @@ public class HoldingService {
             holdingRepository.findByPropertyIdAndState(property.getId(), HoldingState.ACTIVE)
                     .forEach(activeHolding -> activeHolding.setState(HoldingState.INACTIVE));
 
-            HoldingEntity ho = new HoldingEntity(property, fam.get(), dto.getPrice(), dto.getDate());
+            Date date = dto.getDate() == null ? new Date() : dto.getDate();
+            HoldingEntity ho = new HoldingEntity(property, fam.get(), dto.getPrice(), date);
             return holdingRepository.save(ho);
         }else  {
             return null;

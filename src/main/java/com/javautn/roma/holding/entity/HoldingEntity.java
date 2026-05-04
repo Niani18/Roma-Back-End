@@ -36,7 +36,7 @@ public class HoldingEntity {
 
     public HoldingEntity(PropertyEntity property,  FamilyEntity family, double price, Date date) {
         this.property = property;
-        this.date = new Date();
+        this.date = date;
         this.family = family;
         this.price = price;
         this.state = HoldingState.ACTIVE;

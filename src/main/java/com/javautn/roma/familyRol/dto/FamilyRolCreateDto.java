@@ -20,7 +20,6 @@ public class FamilyRolCreateDto {
         this.citizenId = citizenId;
         this.familyId = familyId;
         this.rolName = rolName;
-        this.joingDate = new Date();
     }
 
     public Long getCitizenId() {
@@ -40,7 +39,7 @@ public class FamilyRolCreateDto {
     }
 
     public Date getJoingDate() {
-        return joingDate == null ? new Date() : joingDate;
+        return joingDate;
     }
 
     public void setJoingDate(Date joingDate) {

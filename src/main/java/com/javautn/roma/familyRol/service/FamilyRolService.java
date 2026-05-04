@@ -9,6 +9,7 @@ import com.javautn.roma.human.entity.CitizenEntity;
 import com.javautn.roma.human.service.HumanService;
 import org.springframework.stereotype.Service;
 
+import java.util.Date;
 import java.util.Optional;
 
 @Service
@@ -29,7 +30,8 @@ public class FamilyRolService {
         Optional<FamilyEntity> family = familyService.getOneFamily(dto.getFamilyId());
 
         if (citizen.isPresent() && family.isPresent()) {
-            FamilyRolEntity familyRol = new FamilyRolEntity(family.get(), citizen.get(), dto.getJoingDate(), dto.getRolName());
+            Date joiningDate = dto.getJoingDate() == null ? new Date() : dto.getJoingDate();
+            FamilyRolEntity familyRol = new FamilyRolEntity(family.get(), citizen.get(), joiningDate, dto.getRolName());
             return Optional.of(familyRolRepository.save(familyRol));
         }
         return Optional.empty();
