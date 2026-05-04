@@ -6,14 +6,13 @@ import java.util.Date;
 
 public class AcquisitionCreateDto {
 
-    @NotNull private double price;
-    @NotNull private Date date;
-    @NotNull private long slave;
-    @NotNull private long family;
+    @NotNull private Double price;
+    private Date date;
+    @NotNull private Long slave;
+    @NotNull private Long family;
 
-    public AcquisitionCreateDto(double price, Date date, long slave, long family) {
+    public AcquisitionCreateDto(double price, long slave, long family) {
         this.price = price;
-        this.date = date;
         this.slave = slave;
         this.family = family;
     }

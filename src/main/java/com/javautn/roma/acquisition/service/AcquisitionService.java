@@ -43,7 +43,8 @@ public class AcquisitionService {
                 });
 
 
-        AcquisitionEntity ac = new AcquisitionEntity(dto.getPrice(), dto.getDate(), slave.get(), family.get(), State.ACTIVE);
+        Date date = dto.getDate() != null ? dto.getDate() : new Date();
+        AcquisitionEntity ac = new AcquisitionEntity(dto.getPrice(), date, slave.get(), family.get(), State.ACTIVE);
 
         return Optional.of(acquisitionRepository.save(ac));
 

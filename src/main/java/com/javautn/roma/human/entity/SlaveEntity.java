@@ -1,10 +1,14 @@
 package com.javautn.roma.human.entity;
 
+import com.javautn.roma.acquisition.entity.AcquisitionEntity;
 import jakarta.persistence.Column;
 import jakarta.persistence.Entity;
+import jakarta.persistence.OneToMany;
 import jakarta.persistence.Table;
 
+import java.util.ArrayList;
 import java.util.Date;
+import java.util.List;
 
 
 @Entity
@@ -12,6 +16,9 @@ import java.util.Date;
 public class SlaveEntity extends HumanEntity {
 
     @Column protected double price;
+
+    @OneToMany(mappedBy = "slave")
+    private final List<AcquisitionEntity> acquisitions = new ArrayList<>();
 
     protected SlaveEntity() {
         super();
@@ -44,5 +51,9 @@ public class SlaveEntity extends HumanEntity {
 
     public double getPrice() {
         return price;
+    }
+
+    public List<AcquisitionEntity> getAcquisitions() {
+        return acquisitions;
     }
 }

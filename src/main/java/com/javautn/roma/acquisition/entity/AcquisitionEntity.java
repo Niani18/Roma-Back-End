@@ -21,15 +21,15 @@ public class AcquisitionEntity {
     private Date date;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "slave_id")
+    @JoinColumn(name = "slave_id", nullable = false)
     private SlaveEntity slave;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "family_id")
+    @JoinColumn(name = "family_id",  nullable = false)
     private FamilyEntity family;
 
-    @Enumerated
-    @Column
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false)
     private State state;
 
     public AcquisitionEntity(double price, Date date, SlaveEntity slave, FamilyEntity family, State state) {

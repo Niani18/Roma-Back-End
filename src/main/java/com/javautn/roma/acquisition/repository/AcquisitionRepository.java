@@ -9,5 +9,4 @@ import java.util.Optional;
 
 public interface AcquisitionRepository extends JpaRepository<AcquisitionEntity, Long> {
     List<AcquisitionEntity> findByStateAndSlaveId(State state, long id);
-    List<AcquisitionEntity> findBySlaveId(long id);
 }

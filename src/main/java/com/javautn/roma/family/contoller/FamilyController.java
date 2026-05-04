@@ -1,9 +1,6 @@
 package com.javautn.roma.family.contoller;
 
-import com.javautn.roma.family.dto.FamilyCreateDto;
-import com.javautn.roma.family.dto.FamilyResponseDto;
-import com.javautn.roma.family.dto.FamilyWithMembersDto;
-import com.javautn.roma.family.dto.FamilyWithPropertiesDto;
+import com.javautn.roma.family.dto.*;
 import com.javautn.roma.family.service.FamilyService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -54,6 +51,14 @@ public class FamilyController {
     public ResponseEntity<FamilyWithMembersDto> getOneWithMembers(@PathVariable long id) {
         return familyService.getOneFamilyWithMembers(id)
                 .map(FamilyWithMembersDto::fromFamily)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/getOneFamilyWithSlaves/{id}")
+    public ResponseEntity<FamilyWithSlavesDto> getOneFamilyWithSlaves(@PathVariable long id) {
+        return familyService.getOneFamilyWithSlaves(id)
+                .map(FamilyWithSlavesDto::fromFamily)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

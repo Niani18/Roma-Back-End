@@ -46,6 +46,10 @@ public class FamilyService {
         return familyRepository.findFamilyWithMembers(id);
     }
 
+    public Optional<FamilyEntity> getOneFamilyWithSlaves(long id) {
+        return familyRepository.findFamilyWithSlaves(id);
+    }
+
     public Optional<FamilyEntity> createFamily (FamilyCreateDto dto){
         Optional<ProvinceEntity> province = provinceRepository.findById(dto.getProvinceId());
         if(province.isPresent()){

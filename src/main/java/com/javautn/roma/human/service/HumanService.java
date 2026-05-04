@@ -112,7 +112,7 @@ public class HumanService {
 
         slave.setDeathDate(deathDate);
 
-        acquisitionRepository.findBySlaveId(slave.getId())
+        acquisitionRepository.findByStateAndSlaveId(State.ACTIVE, slave.getId())
                 .forEach(acquisition -> acquisition.setState(State.DEATH));
 
         return Optional.of(slaveRepository.save(slave));
@@ -120,5 +120,9 @@ public class HumanService {
 
     public Optional<CitizenEntity> getCitizenByFamily(long id) {
         return citizenRepository.findCitizenWithFamilies(id);
+    }
+
+    public Optional<SlaveEntity> getSlaveByFamily(long id) {
+        return slaveRepository.findSlaveWithFamilies(id);
     }
 }

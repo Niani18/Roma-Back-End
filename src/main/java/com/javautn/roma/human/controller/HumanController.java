@@ -54,6 +54,14 @@ public class HumanController {
 
     }
 
+    @GetMapping("/slave/getOneWithFamily/{id}")
+    public ResponseEntity<SlaveWithFamiliesDto> getOneSlaveWithFamily(@PathVariable long id) {
+        return humanService.getSlaveByFamily(id)
+                .map(SlaveWithFamiliesDto::fromSlaveWith)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping("citizen")
     public ResponseEntity<CitizenResponseDTO> createCitizen(
             @Valid @RequestBody final CitizenCreateDTO ccdto) {
