@@ -1,5 +1,6 @@
 package com.javautn.roma.crime.entity;
 
+import com.javautn.roma.human.entity.CitizenEntity;
 import com.javautn.roma.legalCase.entity.LegalCaseEntity;
 import jakarta.persistence.*;
 
@@ -20,6 +21,10 @@ public class CrimeEntity {
 
     @OneToMany(mappedBy = "crime", cascade = CascadeType.ALL)
     private final List<LegalCaseEntity> legalCases = new ArrayList<>();
+
+    @ManyToOne(fetch = FetchType.LAZY)
+    @JoinColumn(name = "citizen_id", nullable = false)
+    private CitizenEntity citizen;
 
     public CrimeEntity(String description) {
         this.description = description;

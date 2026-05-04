@@ -1,5 +1,7 @@
 package com.javautn.roma.human.service;
 
+import com.javautn.roma.acquisition.entity.State;
+import com.javautn.roma.acquisition.repository.AcquisitionRepository;
 import com.javautn.roma.familyRol.repository.FamilyRolRepository;
 import com.javautn.roma.human.entity.CitizenEntity;
 import com.javautn.roma.human.entity.SlaveEntity;
@@ -18,11 +20,13 @@ public class HumanService {
     private final CitizenRepository citizenRepository;
     private final SlaveRepository slaveRepository;
     private final FamilyRolRepository familyRolRepository;
+    private final AcquisitionRepository acquisitionRepository;
 
-    public HumanService(final CitizenRepository citizenRepository, final SlaveRepository slaveRepository,  final FamilyRolRepository familyRolRepository) {
+    public HumanService(final CitizenRepository citizenRepository, final SlaveRepository slaveRepository,  final FamilyRolRepository familyRolRepository,  final AcquisitionRepository acquisitionRepository) {
         this.citizenRepository = citizenRepository;
         this.slaveRepository = slaveRepository;
         this.familyRolRepository = familyRolRepository;
+        this.acquisitionRepository = acquisitionRepository;
     }
 
     public List<CitizenEntity> getAllCitizen() {
@@ -92,6 +96,26 @@ public class HumanService {
                 .forEach(familyRol -> familyRol.setDateOfUnjoining(deathDate));
 
         return Optional.of(citizenRepository.save(citizen));
+    }
+
+    @Transactional
+    public Optional<SlaveEntity> setDeathDateOfSlaves(final long id) {
+
+        Optional<SlaveEntity> nuevoDesecho = slaveRepository.findById(id);
+
+        if (nuevoDesecho.isEmpty()) {
+            return Optional.empty();
+        }
+
+        Date deathDate = new Date();
+        SlaveEntity slave = nuevoDesecho.get();
+
+        slave.setDeathDate(deathDate);
+
+        acquisitionRepository.findBySlaveId(slave.getId())
+                .forEach(acquisition -> acquisition.setState(State.DEATH));
+
+        return Optional.of(slaveRepository.save(slave));
     }
 
     public Optional<CitizenEntity> getCitizenByFamily(long id) {

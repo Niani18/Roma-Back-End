@@ -1,6 +1,7 @@
 package com.javautn.roma.familyRol.dto;
 
 import com.javautn.roma.family.dto.FamilyResponseDto;
+import com.javautn.roma.familyRol.entity.FamilyRolEntity;
 import com.javautn.roma.familyRol.entity.Role;
 import com.javautn.roma.human.dto.CitizenResponseDTO;
 
@@ -72,5 +73,16 @@ public class FamilyRolResponseDto {
 
     public void setUnjoingDate(Date unjoingDate) {
         this.unjoingDate = unjoingDate;
+    }
+
+    public static FamilyRolResponseDto toResponseDto(FamilyRolEntity role) {
+        return new FamilyRolResponseDto(
+                role.getId(),
+                role.getRole(),
+                CitizenResponseDTO.fromCitizen(role.getCitizen()),
+                FamilyResponseDto.fromFamily(role.getFamily()),
+                role.getDateOfJoining(),
+                role.getDateOfUnjoining()
+        );
     }
 }

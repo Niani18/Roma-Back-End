@@ -92,6 +92,14 @@ public class HumanController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
+    @PatchMapping("slave/death/{id}")
+    public ResponseEntity<SlaveResponseDTO> setDeathDateofSlave(@PathVariable long id) {
+        return humanService.setDeathDateOfSlaves(id)
+                .map(SlaveResponseDTO::fromSlave)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @DeleteMapping("citizen/{id}")
     public ResponseEntity<CitizenResponseDTO> deleteCitizen(@PathVariable final long id) {
         final Optional<CitizenEntity> citizen = humanService.getCitizen(id);

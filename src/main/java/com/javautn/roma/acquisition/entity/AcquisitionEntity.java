@@ -28,11 +28,16 @@ public class AcquisitionEntity {
     @JoinColumn(name = "family_id")
     private FamilyEntity family;
 
-    public AcquisitionEntity(double price, Date date, SlaveEntity slave, FamilyEntity family) {
+    @Enumerated
+    @Column
+    private State state;
+
+    public AcquisitionEntity(double price, Date date, SlaveEntity slave, FamilyEntity family, State state) {
         this.price = price;
         this.date = date;
         this.slave = slave;
         this.family = family;
+        this.state = state;
     }
 
     protected AcquisitionEntity() {}
@@ -71,5 +76,13 @@ public class AcquisitionEntity {
 
     public void setFamily(FamilyEntity family) {
         this.family = family;
+    }
+
+    public State getState() {
+        return state;
+    }
+
+    public void setState(State state) {
+        this.state = state;
     }
 }
