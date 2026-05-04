@@ -1,6 +1,7 @@
 package com.javautn.roma.holding.dto;
 
 import com.javautn.roma.family.dto.FamilyResponseDto;
+import com.javautn.roma.holding.entity.HoldingEntity;
 import com.javautn.roma.property.dto.PropertyResponseDto;
 
 import java.util.Date;
@@ -61,5 +62,16 @@ public class HoldingResponseDto {
 
     public void setDate(Date date) {
         this.date = date;
+    }
+
+
+    public static HoldingResponseDto fromHolding(HoldingEntity holding) {
+        return new HoldingResponseDto(
+                holding.getId(),
+                PropertyResponseDto.fromProperty(holding.getProperty()),
+                FamilyResponseDto.fromFamily(holding.getFamily()),
+                holding.getPrice(),
+                holding.getDate()
+        );
     }
 }
