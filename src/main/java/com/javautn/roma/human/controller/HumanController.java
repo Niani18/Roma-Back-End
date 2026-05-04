@@ -54,6 +54,14 @@ public class HumanController {
 
     }
 
+    @GetMapping("/slave/getOneWithFamily/{id}")
+    public ResponseEntity<SlaveWithFamiliesDto> getOneSlaveWithFamily(@PathVariable long id) {
+        return humanService.getSlaveByFamily(id)
+                .map(SlaveWithFamiliesDto::fromSlaveWith)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @PostMapping("citizen")
     public ResponseEntity<CitizenResponseDTO> createCitizen(
             @Valid @RequestBody final CitizenCreateDTO ccdto) {
@@ -88,6 +96,14 @@ public class HumanController {
     public ResponseEntity<CitizenResponseDTO> setDeathDate(@PathVariable long id) {
         return humanService.setDeathDate(id)
                 .map(CitizenResponseDTO::fromCitizen)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
+    @PatchMapping("slave/death/{id}")
+    public ResponseEntity<SlaveResponseDTO> setDeathDateofSlave(@PathVariable long id) {
+        return humanService.setDeathDateOfSlaves(id)
+                .map(SlaveResponseDTO::fromSlave)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }

@@ -26,19 +26,10 @@ public class FamilyRolController {
     @PostMapping("/createFamilyRole")
     public ResponseEntity<FamilyRolResponseDto> createFamilyRole (@Valid @RequestBody FamilyRolCreateDto dto){
         return familyRolService.crateFamilyRol(dto)
-                .map(this::toResponseDto)
+                .map(FamilyRolResponseDto::toResponseDto)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    private FamilyRolResponseDto toResponseDto(FamilyRolEntity role) {
-        return new FamilyRolResponseDto(
-                role.getId(),
-                role.getRole(),
-                CitizenResponseDTO.fromCitizen(role.getCitizen()),
-                FamilyResponseDto.fromFamily(role.getFamily()),
-                role.getDateOfJoining(),
-                role.getDateOfUnjoining()
-        );
-    }
+
 }

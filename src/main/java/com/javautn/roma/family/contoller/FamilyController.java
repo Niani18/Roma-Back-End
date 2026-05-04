@@ -5,13 +5,13 @@ import com.javautn.roma.family.dto.FamilyResponseDto;
 import com.javautn.roma.family.dto.FamilyWithMembersDto;
 import com.javautn.roma.family.dto.FamilyWithPropertiesDto;
 import com.javautn.roma.family.dto.FamilyTaxAssignationsResponseDTO;
+import com.javautn.roma.family.dto.*;
 import com.javautn.roma.family.service.FamilyService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
-import java.util.Optional;
 
 @RestController
 @RequestMapping("/family")
@@ -56,6 +56,14 @@ public class FamilyController {
     @GetMapping("/getOne/{id}")
     public ResponseEntity<FamilyResponseDto> getOne(@RequestParam long id) {
         return ResponseEntity.ofNullable(familyService.getOneFamily(id).map(FamilyResponseDto::fromFamily).orElse(null));
+    }
+
+    @GetMapping("/getOneFamilyWithSlaves/{id}")
+    public ResponseEntity<FamilyWithSlavesDto> getOneFamilyWithSlaves(@PathVariable long id) {
+        return familyService.getOneFamilyWithSlaves(id)
+                .map(FamilyWithSlavesDto::fromFamily)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/create")
