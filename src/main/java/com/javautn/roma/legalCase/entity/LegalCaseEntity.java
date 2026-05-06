@@ -18,17 +18,19 @@ public class LegalCaseEntity {
 
     @Column(nullable = false)
     private Date startDate;
+
     @Column (nullable = false)
     private Date endDate;
-    @Column(length =100, nullable = false)
+
+    @Column(length = 100, nullable = false)
     private String state;
 
     @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn(name = "citizen_id")
+    @JoinColumn(name = "citizen_id", nullable = false)
     private CitizenEntity citizen;
 
     @ManyToOne (fetch = FetchType.LAZY)
-    @JoinColumn(name = "crime_id")
+    @JoinColumn(name = "crime_id", nullable = false)
     private CrimeEntity crime;
 
     protected LegalCaseEntity() {}
