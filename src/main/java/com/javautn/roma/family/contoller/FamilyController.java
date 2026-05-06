@@ -27,20 +27,24 @@ public class FamilyController {
     public ResponseEntity<List<FamilyResponseDto>> getAll() {
         return ResponseEntity.ok(familyService.getAllFamilies().stream()
                 .map(FamilyResponseDto::fromFamily)
-                .toList());
+                .toList()
+        );
     }
 
     @GetMapping("/getOneWithProperties/{id}")
     public ResponseEntity<FamilyWithPropertiesDto> getOneWithProperties(@PathVariable long id) {
-        return ResponseEntity.ofNullable(familyService.getOneFamily(id)
-                .map(FamilyWithPropertiesDto::fromFamily).orElse(null));
+        return familyService.getOneFamily(id)
+                .map(FamilyWithPropertiesDto::fromFamily)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/getOneWithMembers/{id}")
     public ResponseEntity<FamilyWithMembersDto> getOneWithMembers(@PathVariable long id) {
-        return ResponseEntity.ofNullable(
-                familyService.getOneFamily(id).map(FamilyWithMembersDto::fromFamily).orElse(null)
-        );
+        return familyService.getOneFamily(id)
+                .map(FamilyWithMembersDto::fromFamily)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/listTaxes/{id}")
@@ -50,12 +54,18 @@ public class FamilyController {
 
     @GetMapping("/getAllByProvince/{id}")
     public ResponseEntity<List<FamilyResponseDto>> getAllByProvince(@PathVariable long id) {
-        return ResponseEntity.ok(familyService.getFamiliesByProvince(id).stream().map(FamilyResponseDto::fromFamily).toList());
+        return ResponseEntity.ok(
+                familyService.getFamiliesByProvince(id).stream()
+                        .map(FamilyResponseDto::fromFamily).toList()
+        );
     }
 
     @GetMapping("/getOne/{id}")
     public ResponseEntity<FamilyResponseDto> getOne(@RequestParam long id) {
-        return ResponseEntity.ofNullable(familyService.getOneFamily(id).map(FamilyResponseDto::fromFamily).orElse(null));
+        return familyService.getOneFamily(id)
+                .map(FamilyResponseDto::fromFamily)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/getOneFamilyWithSlaves/{id}")
@@ -68,8 +78,9 @@ public class FamilyController {
 
     @PostMapping("/create")
     public ResponseEntity<FamilyResponseDto> create(@Valid @RequestBody FamilyCreateDto dto){
-        return ResponseEntity.ofNullable(
-                familyService.createFamily(dto).map(FamilyResponseDto::fromFamily)
-                .orElse(null));
+        return familyService.createFamily(dto)
+                .map(FamilyResponseDto::fromFamily)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 }
