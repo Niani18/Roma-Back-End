@@ -28,8 +28,7 @@ public class TaxService {
     }
 
     public Optional<TaxEntity> createTax(final TaxCreateDTO dto) {
-        final TaxEntity tax = taxRepository.saveAndFlush(dto.newTax());
-        return Optional.of(tax);
+        return  Optional.of(taxRepository.save(dto.newTax()));
     }
 
     public Optional<TaxEntity> updateTax(final long id, final TaxCreateDTO dto) {

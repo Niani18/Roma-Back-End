@@ -1,10 +1,10 @@
 package com.javautn.roma.family.dto;
 
 import com.javautn.roma.family.entity.FamilyEntity;
+import com.javautn.roma.holding.entity.HoldingEntity;
 import com.javautn.roma.property.dto.PropertyResponseDto;
 import com.javautn.roma.province.dto.ProvinceResponseDto;
 
-import java.util.ArrayList;
 import java.util.List;
 
 public class FamilyWithPropertiesDto {
@@ -44,7 +44,11 @@ public class FamilyWithPropertiesDto {
                 family.getId(),
                 family.getName(),
                 ProvinceResponseDto.fromProvince(family.getProvince()),
-                new ArrayList<>()
+                family.getHoldings().stream()
+                        .map(HoldingEntity::getProperty)
+                        .distinct()
+                        .map(PropertyResponseDto::fromProperty)
+                        .toList()
         );
     }
 }

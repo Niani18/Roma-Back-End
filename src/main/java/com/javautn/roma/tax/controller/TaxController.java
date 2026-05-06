@@ -28,25 +28,31 @@ public class TaxController {
 
     @GetMapping("/getOne/{id}")
     public ResponseEntity<TaxResponseDTO> getOneById(
-            @PathVariable("id") final long id) {
-        return ResponseEntity.of(taxService.getTaxById(id).map(TaxResponseDTO::fromTax));
+            @PathVariable final long id) {
+        return taxService.getTaxById(id)
+                .map(TaxResponseDTO::fromTax)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PostMapping("/create")
-    public ResponseEntity<TaxResponseDTO> createTax(final TaxCreateDTO dto) {
-        return ResponseEntity.of(taxService.createTax(dto).map(TaxResponseDTO::fromTax));
+    public ResponseEntity<TaxResponseDTO> createTax(@Valid @RequestBody TaxCreateDTO dto) {
+        return taxService.createTax(dto)
+                .map(TaxResponseDTO::fromTax)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<TaxResponseDTO> updateTax(
-            @PathVariable("id") final long id,
+            @PathVariable final long id,
             @RequestBody @Valid final TaxCreateDTO dto) {
         return ResponseEntity.of(taxService.updateTax(id, dto).map(TaxResponseDTO::fromTax));
     }
 
     @DeleteMapping("/delete/{id}")
     public ResponseEntity<TaxResponseDTO> deleteTax(
-            @PathVariable("id") final long id) {
+            @PathVariable final long id) {
         final Optional<TaxEntity> tax = taxService.getTaxById(id);
         taxService.deleteTax(id);
         return ResponseEntity.of(tax.map(TaxResponseDTO::fromTax));

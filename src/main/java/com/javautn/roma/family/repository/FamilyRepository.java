@@ -36,6 +36,15 @@ public interface FamilyRepository extends JpaRepository<FamilyEntity, Long> {
     @Query("""
             select distinct f
             from FamilyEntity f
+            left join fetch f.assignations a
+            left join fetch a.tax
+            where f.id = :id
+            """)
+    Optional<FamilyEntity> findFamilyWithTaxAssignations(@Param("id") long id);
+
+    @Query("""
+            select distinct f
+            from FamilyEntity f
             left join fetch f.province
             left join fetch f.familyRol fr
             left join fetch fr.citizen
