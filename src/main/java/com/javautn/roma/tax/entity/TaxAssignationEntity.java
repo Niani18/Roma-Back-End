@@ -39,7 +39,7 @@ public class TaxAssignationEntity {
 
     public TaxAssignationEntity(
             double amount, Date expiryDate, Date paymentDate, String state,
-            float interest, String sanction) {
+            double interest, String sanction) {
         this.amount = amount;
         this.expiryDate = expiryDate;
         this.paymentDate = paymentDate;
@@ -126,5 +126,21 @@ public class TaxAssignationEntity {
 
     public TaxEntity getTax() {
         return tax;
+    }
+
+    public FamilyEntity getFamily() {
+        return family;
+    }
+
+    public void setFamily(FamilyEntity family) {
+        this.family = family;
+    }
+
+    public PropertyEntity getProperty() {
+        return property;
+    }
+
+    public void setProperty(PropertyEntity property) {
+        this.property = property;
     }
 }
