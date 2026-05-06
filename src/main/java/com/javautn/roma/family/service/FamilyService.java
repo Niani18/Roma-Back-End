@@ -54,7 +54,7 @@ public class FamilyService {
         Optional<ProvinceEntity> province = provinceRepository.findById(dto.getProvinceId());
         if(province.isPresent()) {
             FamilyEntity fam = new FamilyEntity(dto.getName(), province.get());
-            return Optional.of(familyRepository.saveAndFlush(fam));
+            return Optional.of(familyRepository.save(fam));
         }
         else {
             return  Optional.empty();

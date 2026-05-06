@@ -22,7 +22,8 @@ public class FamilyController {
     public ResponseEntity<List<FamilyResponseDto>> getAll() {
         return ResponseEntity.ok(familyService.getAllFamilies().stream()
                 .map(FamilyResponseDto::fromFamily)
-                .toList());
+                .toList()
+        );
     }
 
     @GetMapping("/getOne/{id}")

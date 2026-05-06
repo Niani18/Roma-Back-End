@@ -1,8 +1,7 @@
 package com.javautn.roma.family.dto;
 
 import com.javautn.roma.family.entity.FamilyEntity;
-import com.javautn.roma.holding.entity.HoldingEntity;
-import com.javautn.roma.property.dto.PropertyResponseDto;
+import com.javautn.roma.holding.dto.HoldingResponseDto;
 import com.javautn.roma.province.dto.ProvinceResponseDto;
 
 import java.util.List;
@@ -12,11 +11,11 @@ public class FamilyWithPropertiesDto {
     private long id;
     private String name;
     private ProvinceResponseDto province;
-    private List<PropertyResponseDto> properties;
+    private List<HoldingResponseDto> properties;
 
     protected FamilyWithPropertiesDto() {}
 
-    public FamilyWithPropertiesDto(long id, String name, ProvinceResponseDto province, List<PropertyResponseDto> properties) {
+    public FamilyWithPropertiesDto(long id, String name, ProvinceResponseDto province, List<HoldingResponseDto> properties) {
         this.id = id;
         this.name = name;
         this.province = province;
@@ -35,7 +34,7 @@ public class FamilyWithPropertiesDto {
         return province;
     }
 
-    public List<PropertyResponseDto> getProperties() {
+    public List<HoldingResponseDto> getPropertyHoldings() {
         return properties;
     }
 
@@ -44,11 +43,7 @@ public class FamilyWithPropertiesDto {
                 family.getId(),
                 family.getName(),
                 ProvinceResponseDto.fromProvince(family.getProvince()),
-                family.getHoldings().stream()
-                        .map(HoldingEntity::getProperty)
-                        .distinct()
-                        .map(PropertyResponseDto::fromProperty)
-                        .toList()
+                family.getHoldings().stream().map(HoldingResponseDto::fromHolding).toList()
         );
     }
 }
