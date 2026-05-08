@@ -29,13 +29,17 @@ public class SentenceEntity {
     @JoinColumn(name = "legal_case_id", nullable = false)
     private LegalCaseEntity legalCase;
 
-    protected SentenceEntity() {}
+    protected SentenceEntity(String description, long idLegalCase, Date applicationDate, Date estimatedEndDate) {}
 
     public SentenceEntity(String description, Date applicationDate, Date estimatedEndDate, Date finalEndDate) {
         this.description = description;
         this.applicationDate = applicationDate;
         this.estimatedEndDate = estimatedEndDate;
         this.finalEndDate = finalEndDate;
+    }
+
+    public SentenceEntity() {
+
     }
 
     public long getId() { return id; }

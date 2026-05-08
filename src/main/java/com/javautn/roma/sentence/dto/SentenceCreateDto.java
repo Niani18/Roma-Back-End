@@ -9,7 +9,8 @@ import java.util.Date;
 public class SentenceCreateDto {
     @NotBlank
     private String description;
-    private long idLegalCause;
+    @NotNull
+    private long idLegalCase;
 
     @NotNull
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
@@ -18,9 +19,9 @@ public class SentenceCreateDto {
 
     protected SentenceCreateDto() {}
 
-    public SentenceCreateDto(String description, long idLegalCause, Date applicationDate, Date estimatedEndDate) {
+    public SentenceCreateDto(String description, long idLegalCase, Date applicationDate, Date estimatedEndDate) {
         this.description = description;
-        this.idLegalCause = idLegalCause;
+        this.idLegalCase = idLegalCase;
         this.applicationDate = applicationDate;
         this.estimatedEndDate = estimatedEndDate;
     }
@@ -28,8 +29,10 @@ public class SentenceCreateDto {
     public String getDescription() { return description; }
     public void setDescription(String description) { this.description = description; }
 
-    public long getIdLegalCause() { return idLegalCause; }
-    public void setIdLegalCause(long idLegalCause) {  this.idLegalCause = idLegalCause; }
+    public long getIdLegalCase() { return idLegalCase; }
+    public void setIdLegalCase(long idLegalCase) {
+        this.idLegalCase = idLegalCase;
+    }
 
     public Date getApplicationDate() { return applicationDate; }
     public void setApplicationDate(Date applicationDate) { this.applicationDate = applicationDate; }

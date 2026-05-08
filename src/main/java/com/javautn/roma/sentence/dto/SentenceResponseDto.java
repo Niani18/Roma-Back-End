@@ -5,7 +5,7 @@ import java.util.Date;
 public class SentenceResponseDto {
     public final long id;
     public final String description;
-    public final long idLegalCause;
+    public final long idLegalCase;
     public final Date applicationDate;
     public final Date estimatedEndDate;
     public final Date finalEndDate;
@@ -13,13 +13,13 @@ public class SentenceResponseDto {
     public SentenceResponseDto(
             final long id,
             final String description,
-            final long idLegalCause,
+            final long idLegalCase,
             final Date applicationDate,
             final Date estimatedEndDate,
             final Date finalEndDate) {
         this.id = id;
         this.description = description;
-        this.idLegalCause = idLegalCause;
+        this.idLegalCase = idLegalCase;
         this.applicationDate = applicationDate;
         this.estimatedEndDate = estimatedEndDate;
         this.finalEndDate = finalEndDate;
