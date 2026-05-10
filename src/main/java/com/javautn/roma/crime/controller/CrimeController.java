@@ -2,7 +2,6 @@ package com.javautn.roma.crime.controller;
 
 import com.javautn.roma.crime.dto.CrimeCreateDto;
 import com.javautn.roma.crime.dto.CrimeResponseDto;
-import com.javautn.roma.crime.entity.CrimeEntity;
 import com.javautn.roma.crime.service.CrimeService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;

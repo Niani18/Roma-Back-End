@@ -1,5 +1,9 @@
 package com.javautn.roma.legalCase.service;
 
+import com.javautn.roma.crime.entity.CrimeEntity;
+import com.javautn.roma.crime.repository.CrimeRepository;
+import com.javautn.roma.human.entity.CitizenEntity;
+import com.javautn.roma.human.repository.CitizenRepository;
 import com.javautn.roma.legalCase.dto.LegalCaseCreateDto;
 import com.javautn.roma.legalCase.dto.LegalCaseResponseDto;
 import com.javautn.roma.legalCase.entity.LegalCaseEntity;
@@ -13,9 +17,16 @@ import java.util.Optional;
 public class LegalCaseService {
 
     private final  LegalCaseRepository legalCaseRepository;
+    private final CitizenRepository citizenRepository;
+    private final CrimeRepository crimeRepository;
 
-    public LegalCaseService(LegalCaseRepository legalCaseRepository) {
+    public LegalCaseService(
+            LegalCaseRepository legalCaseRepository,
+            CitizenRepository citizenRepository,
+            CrimeRepository crimeRepository) {
         this.legalCaseRepository = legalCaseRepository;
+        this.citizenRepository = citizenRepository;
+        this.crimeRepository = crimeRepository;
     }
 
     public List<LegalCaseResponseDto> getAllLegalCase(){
@@ -30,15 +41,37 @@ public class LegalCaseService {
     }
 
     public LegalCaseResponseDto createLegalCase(LegalCaseCreateDto dto){
-        LegalCaseEntity legalCase = new LegalCaseEntity(dto.getStartDate(), dto.getEndDate(), dto.getState());
+        CitizenEntity citizen = citizenRepository.findById(dto.getCitizenId())
+                .orElseThrow(() -> new IllegalArgumentException("Citizen not found"));
+        CrimeEntity crime = crimeRepository.findById(dto.getCrimeId())
+                .orElseThrow(() -> new IllegalArgumentException("Crime not found"));
+
+        LegalCaseEntity legalCase = new LegalCaseEntity(
+                dto.getStartDate(),
+                dto.getEndDate(),
+                dto.getState(),
+                citizen,
+                crime
+        );
         LegalCaseEntity savedLegalCase = legalCaseRepository.save(legalCase);
 
         return new LegalCaseResponseDto(savedLegalCase.getId(), savedLegalCase.getStartDate(), savedLegalCase.getEndDate(), savedLegalCase.getState());
     }
 
     public Optional<LegalCaseResponseDto> updateLegalCase(LegalCaseCreateDto dto, long id){
+        Optional<CitizenEntity> citizen = citizenRepository.findById(dto.getCitizenId());
+        Optional<CrimeEntity> crime = crimeRepository.findById(dto.getCrimeId());
+        if (citizen.isEmpty() || crime.isEmpty()) {
+            return Optional.empty();
+        }
+
         return legalCaseRepository.findById(id)
-                .map(legalCase -> {legalCase.setStartDate(dto.getStartDate()); legalCase.setEndDate(dto.getEndDate()); legalCase.setState(dto.getState());
+                .map(legalCase -> {
+                legalCase.setStartDate(dto.getStartDate());
+                legalCase.setEndDate(dto.getEndDate());
+                legalCase.setState(dto.getState());
+                legalCase.setCitizen(citizen.get());
+                legalCase.setCrime(crime.get());
                 LegalCaseEntity saved =  legalCaseRepository.save(legalCase);
                 return new LegalCaseResponseDto(saved.getId(), saved.getStartDate(), saved.getEndDate(), saved.getState());
                 });

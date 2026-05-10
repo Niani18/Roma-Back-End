@@ -1,6 +1,5 @@
 package com.javautn.roma.human.entity;
 
-import com.javautn.roma.crime.entity.CrimeEntity;
 import com.javautn.roma.familyRol.entity.FamilyRolEntity;
 import jakarta.persistence.*;
 
@@ -26,15 +25,8 @@ public class CitizenEntity extends HumanEntity {
         super(fullName, birthDate);
         this.socialRole = socialRole;
     }
-    @OneToMany(mappedBy = "citizen", cascade = CascadeType.ALL)
-    private final List<CrimeEntity> crimes = new ArrayList<>();
-
     @OneToMany(mappedBy = "citizen",  cascade = CascadeType.ALL)
     private final List<FamilyRolEntity> familyRol = new ArrayList<>();
-
-    public List<CrimeEntity> getCrimes() {
-        return crimes;
-    }
 
     public  List<FamilyRolEntity> getFamilyRol() {
         return familyRol;

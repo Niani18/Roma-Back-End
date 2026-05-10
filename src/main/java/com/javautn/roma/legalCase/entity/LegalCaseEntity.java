@@ -1,8 +1,8 @@
 
 package com.javautn.roma.legalCase.entity;
 
-import com.javautn.roma.human.entity.CitizenEntity;
 import com.javautn.roma.crime.entity.CrimeEntity;
+import com.javautn.roma.human.entity.CitizenEntity;
 import jakarta.persistence.*;
 
 import java.util.Date;
@@ -35,10 +35,12 @@ public class LegalCaseEntity {
 
     protected LegalCaseEntity() {}
 
-    public LegalCaseEntity(Date startDate, Date endDate, String state) {
+    public LegalCaseEntity(Date startDate, Date endDate, String state, CitizenEntity citizen, CrimeEntity crime) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.state = state;
+        this.citizen = citizen;
+        this.crime = crime;
     }
 
     public Long getId() { return id; }

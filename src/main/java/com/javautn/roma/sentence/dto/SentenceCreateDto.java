@@ -15,6 +15,8 @@ public class SentenceCreateDto {
     @NotNull
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
     private Date applicationDate;
+    @NotNull
+    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
     private Date estimatedEndDate;
 
     protected SentenceCreateDto() {}
