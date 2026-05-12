@@ -22,8 +22,10 @@ public class TaxController {
     }
 
     @GetMapping("/getAll")
-    public ResponseEntity<List<TaxEntity>> getAllTaxes() {
-        return ResponseEntity.ok(taxService.getAllTaxes());
+    public ResponseEntity<List<TaxResponseDTO>> getAllTaxes() {
+        return ResponseEntity.ok(taxService.getAllTaxes().stream()
+                .map(TaxResponseDTO::fromTax)
+                .toList());
     }
 
     @GetMapping("/getOne/{id}")

@@ -51,6 +51,10 @@ public class PropertyService {
                 .map(this::toPropertyWithAllHoldingsDto);
     }
 
+    public Optional<PropertyEntity> findPropertyWithTaxAssignations(long id) {
+        return propertyRepository.findPropertyWithTaxAssignations(id);
+    }
+
     private PropertyWithOwnersDto toPropertyWithOwnersDto(PropertyEntity property) {
         PropertyOwnerDto owner = property.getHoldings().stream()
                 .map(this::toPropertyOwnerDto)

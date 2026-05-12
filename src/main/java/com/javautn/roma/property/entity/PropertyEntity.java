@@ -60,6 +60,10 @@ public class PropertyEntity {
         return holdings;
     }
 
+    public List<TaxAssignationEntity> getTaxAssignations() {
+        return assignations;
+    }
+
     @Override
     public String toString() {
         return "PropertyEntity={" + "id=" + id + ", " +

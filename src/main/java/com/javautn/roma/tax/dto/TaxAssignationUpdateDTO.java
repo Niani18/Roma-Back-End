@@ -16,6 +16,7 @@ public class TaxAssignationUpdateDTO {
         this.expiryDate = Optional.empty();
         this.paymentDate = Optional.empty();
         this.interest = Optional.empty();
+        this.sanction = Optional.empty();
     }
 
     public Optional<Double> getAmount() {

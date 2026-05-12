@@ -40,4 +40,13 @@ public interface PropertyRepository extends JpaRepository<PropertyEntity, Long> 
             where p.id = :id
             """)
     Optional<PropertyEntity> findAllHoldingsWithOwners(@Param("id") long id);
+
+    @Query("""
+            select distinct p
+            from PropertyEntity p
+            left join fetch p.assignations a
+            left join fetch a.tax
+            where p.id = :id
+            """)
+    Optional<PropertyEntity> findPropertyWithTaxAssignations(@Param("id") long id);
 }

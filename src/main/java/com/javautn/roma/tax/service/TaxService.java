@@ -1,12 +1,10 @@
 package com.javautn.roma.tax.service;
 
 import com.javautn.roma.tax.dto.TaxCreateDTO;
-import com.javautn.roma.tax.dto.TaxResponseDTO;
 import com.javautn.roma.tax.entity.TaxEntity;
 import com.javautn.roma.tax.repository.TaxRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 
@@ -20,7 +18,7 @@ public class TaxService {
     }
 
     public List<TaxEntity> getAllTaxes() {
-        return new ArrayList<TaxEntity>();
+        return taxRepository.findAll();
     }
 
     public Optional<TaxEntity> getTaxById(final long id) {

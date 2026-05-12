@@ -1,6 +1,7 @@
 package com.javautn.roma.tax.controller;
 
-import com.javautn.roma.tax.dto.TaxAssignationCreateDTO;
+import com.javautn.roma.tax.dto.TaxAssignationFamilyCreateDTO;
+import com.javautn.roma.tax.dto.TaxAssignationPropertyCreateDTO;
 import com.javautn.roma.tax.dto.TaxAssignationResponseDTO;
 import com.javautn.roma.tax.dto.TaxAssignationUpdateDTO;
 import com.javautn.roma.tax.service.TaxAssignationService;
@@ -23,8 +24,6 @@ public class TaxAssignationController {
     }
 
 
-
-
     @GetMapping("/getAll")
     public ResponseEntity<List<TaxAssignationResponseDTO>> getAll() {
         return ResponseEntity.ok(
@@ -41,23 +40,19 @@ public class TaxAssignationController {
                 .orElse(ResponseEntity.notFound().build());
     }
 
-    @PostMapping("/forFamily")
+    @PostMapping("/createForFamily")
     public ResponseEntity<TaxAssignationResponseDTO> createAssignationForFamily(
-            @Valid @RequestBody TaxAssignationCreateDTO dto) {
-        if(dto.getFamilyId() == 0)
-            return ResponseEntity.badRequest().build();
-        return assignationService.createAssignation(dto, TaxAssignationService.AssignTo.FAMILY)
+            @Valid @RequestBody TaxAssignationFamilyCreateDTO dto) {
+        return assignationService.createAssignationForFamily(dto)
                 .map(TaxAssignationResponseDTO::fromTaxAssignation)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());
     }
 
-    @PostMapping("/forProperty")
+    @PostMapping("/createForProperty")
     public ResponseEntity<TaxAssignationResponseDTO> createAssignationForProperty(
-            @Valid @RequestBody TaxAssignationCreateDTO dto) {
-        if(dto.getFamilyId() == 0)
-            return ResponseEntity.badRequest().build();
-        return assignationService.createAssignation(dto, TaxAssignationService.AssignTo.PROPERTY)
+            @Valid @RequestBody TaxAssignationPropertyCreateDTO dto) {
+        return assignationService.createAssignationForProperty(dto)
                 .map(TaxAssignationResponseDTO::fromTaxAssignation)
                 .map(ResponseEntity::ok)
                 .orElse(ResponseEntity.badRequest().build());

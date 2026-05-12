@@ -4,10 +4,15 @@ import com.javautn.roma.family.entity.FamilyEntity;
 import com.javautn.roma.family.repository.FamilyRepository;
 import com.javautn.roma.property.entity.PropertyEntity;
 import com.javautn.roma.property.repository.PropertyRepository;
-import com.javautn.roma.tax.dto.TaxAssignationCreateDTO;
+import com.javautn.roma.tax.dto.TaxAssignationFamilyCreateDTO;
+import com.javautn.roma.tax.dto.TaxAssignationPropertyCreateDTO;
 import com.javautn.roma.tax.dto.TaxAssignationUpdateDTO;
+import com.javautn.roma.tax.entity.StateAsignation;
+import com.javautn.roma.tax.entity.Target;
 import com.javautn.roma.tax.entity.TaxAssignationEntity;
+import com.javautn.roma.tax.entity.TaxEntity;
 import com.javautn.roma.tax.repository.TaxAssignationRepository;
+import com.javautn.roma.tax.repository.TaxRepository;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -16,20 +21,18 @@ import java.util.Optional;
 @Service
 public class TaxAssignationService {
 
-    public enum AssignTo {
-        FAMILY,
-        PROPERTY
-    }
-
     private final TaxAssignationRepository assignationRepository;
+    private final TaxRepository taxRepository;
     private final FamilyRepository familyRepository;
     private final PropertyRepository propertyRepository;
 
     public TaxAssignationService(
             TaxAssignationRepository assignationRepository,
+            TaxRepository taxRepository,
             FamilyRepository familyRepository,
             PropertyRepository propertyRepository) {
         this.assignationRepository = assignationRepository;
+        this.taxRepository = taxRepository;
         this.familyRepository = familyRepository;
         this.propertyRepository = propertyRepository;
     }
@@ -42,26 +45,50 @@ public class TaxAssignationService {
         return assignationRepository.findById(id);
     }
 
-    public Optional<TaxAssignationEntity> createAssignation(TaxAssignationCreateDTO dto, AssignTo to) {
-        TaxAssignationEntity entity = dto.newAssignation();
-
-        if(to == AssignTo.FAMILY) {
-
-            if(dto.getFamilyId() == 0)
-                return Optional.empty();
-
-            FamilyEntity fam = familyRepository.getReferenceById(dto.getFamilyId());
-            entity.setFamily(fam);
-
-        } else if (to == AssignTo.PROPERTY) {
-
-            if(dto.getPropertyId() == 0)
-                return Optional.empty();
-
-            PropertyEntity prop = propertyRepository.getReferenceById(dto.getPropertyId());
-            entity.setProperty(prop);
-
+    public Optional<TaxAssignationEntity> createAssignationForFamily(TaxAssignationFamilyCreateDTO dto) {
+        Optional<TaxEntity> tax = taxRepository.findById(dto.getTaxId());
+        if (tax.isEmpty() || tax.get().getTarget() != Target.FAMILY) {
+            return Optional.empty();
         }
+
+        Optional<FamilyEntity> fam = familyRepository.findById(dto.getFamilyId());
+        if (fam.isEmpty()) return Optional.empty();
+
+        TaxAssignationEntity entity = new TaxAssignationEntity(
+                dto.getAmount(),
+                dto.getExpiryDate(),
+                null,
+                StateAsignation.PENDING,
+                0,
+                null,
+                tax.get(),
+                fam.get(),
+                null
+        );
+
+        return Optional.of(assignationRepository.save(entity));
+    }
+
+    public Optional<TaxAssignationEntity> createAssignationForProperty(TaxAssignationPropertyCreateDTO dto) {
+        Optional<TaxEntity> tax = taxRepository.findById(dto.getTaxId());
+        if (tax.isEmpty() || tax.get().getTarget() != Target.PROPERTY) {
+            return Optional.empty();
+        }
+
+        Optional<PropertyEntity> prop = propertyRepository.findById(dto.getPropertyId());
+        if (prop.isEmpty()) return Optional.empty();
+
+        TaxAssignationEntity entity = new TaxAssignationEntity(
+                dto.getAmount(),
+                dto.getExpiryDate(),
+                null,
+                StateAsignation.PENDING,
+                0,
+                null,
+                tax.get(),
+                null,
+                prop.get()
+        );
 
         return Optional.of(assignationRepository.save(entity));
     }
@@ -84,15 +111,19 @@ public class TaxAssignationService {
             assignation.get().setExpiryDate(dto.getExpiryDate().get());
 
         if(dto.getPaymentDate().isPresent())  {
-            assignation.get().setAmount(dto.getAmount().get());
-            assignation.get().setState("PAID");
+            assignation.get().setPaymentDate(dto.getPaymentDate().get());
+            assignation.get().setState(StateAsignation.PAID);
         }
 
         if(dto.getInterest().isPresent())
             assignation.get().setInterest(dto.getInterest().get());
 
-        if(dto.getSanction().isPresent())
+        if(dto.getSanction().isPresent()) {
             assignation.get().setSanction(dto.getSanction().get());
+            if (assignation.get().getState() != StateAsignation.PAID) {
+                assignation.get().setState(StateAsignation.SANCTIONED);
+            }
+        }
 
         return Optional.of(assignationRepository.save(assignation.get()));
     }

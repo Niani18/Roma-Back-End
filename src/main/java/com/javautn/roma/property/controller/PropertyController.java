@@ -2,6 +2,7 @@ package com.javautn.roma.property.controller;
 
 import com.javautn.roma.property.dto.PropertyCreateDto;
 import com.javautn.roma.property.dto.PropertyResponseDto;
+import com.javautn.roma.property.dto.PropertyTaxAssignationsResponseDTO;
 import com.javautn.roma.property.dto.PropertyWithAllHoldingsDto;
 import com.javautn.roma.property.dto.PropertyWithOwnersDto;
 import com.javautn.roma.property.entity.PropertyEntity;
@@ -41,6 +42,14 @@ public class PropertyController {
         return propertyService.findOnePropertyWithAllHoldings(id)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
+    }
+
+    @GetMapping("/listTaxes/{id}")
+    public ResponseEntity<PropertyTaxAssignationsResponseDTO> listTaxes(@PathVariable final long id) {
+        return propertyService.findPropertyWithTaxAssignations(id)
+                .map(PropertyTaxAssignationsResponseDTO::fromProperty)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
     }
 
     @GetMapping("/getAll")

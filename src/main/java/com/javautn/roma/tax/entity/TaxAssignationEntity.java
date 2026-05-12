@@ -19,8 +19,9 @@ public class TaxAssignationEntity {
     @Column(nullable = false) private double amount;
     @Column(nullable = false) private Date expiryDate;
     @Column(nullable = true) private Date paymentDate;
-    @Column(nullable = false, length = 16) private String state;
-    @Column(nullable = false) private double interest;
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 16) private StateAsignation state;
+    @Column(nullable = true) private double interest;
     @Column(nullable = true) private String sanction;
 
     @ManyToOne(fetch = FetchType.LAZY)
@@ -28,24 +29,27 @@ public class TaxAssignationEntity {
     private TaxEntity tax;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "family_id")
+    @JoinColumn(name = "family_id", nullable = true)
     private FamilyEntity family;
 
     @ManyToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "property_id")
+    @JoinColumn(name = "property_id", nullable = true)
     private PropertyEntity property;
 
     protected TaxAssignationEntity() {}
 
     public TaxAssignationEntity(
-            double amount, Date expiryDate, Date paymentDate, String state,
-            double interest, String sanction) {
+            double amount, Date expiryDate, Date paymentDate, StateAsignation state,
+            double interest, String sanction,  TaxEntity tax, FamilyEntity family, PropertyEntity property) {
         this.amount = amount;
         this.expiryDate = expiryDate;
         this.paymentDate = paymentDate;
         this.state = state;
         this.interest = interest;
         this.sanction = sanction;
+        this.tax = tax;
+        this.family = family;
+        this.property = property;
     }
 
     @Override
@@ -92,11 +96,11 @@ public class TaxAssignationEntity {
         this.paymentDate = paymentDate;
     }
 
-    public String getState() {
+    public StateAsignation getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(StateAsignation state) {
         this.state = state;
     }
 
@@ -126,6 +130,10 @@ public class TaxAssignationEntity {
 
     public TaxEntity getTax() {
         return tax;
+    }
+
+    public void setTax(TaxEntity tax) {
+        this.tax = tax;
     }
 
     public FamilyEntity getFamily() {

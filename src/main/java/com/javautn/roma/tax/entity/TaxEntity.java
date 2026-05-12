@@ -15,6 +15,9 @@ public class TaxEntity {
     @Column(nullable = false, length = 64) private String name;
     @Column(nullable = false) private String description;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false) private Target target;
+
     @OneToMany(mappedBy = "tax", cascade = CascadeType.ALL)
     private List<TaxAssignationEntity> assignations;
 
@@ -22,12 +25,14 @@ public class TaxEntity {
         this.id = 0;
         this.name = null;
         this.description = null;
+        this.target = null;
     }
 
-    public TaxEntity(final String name, final String description) {
+    public TaxEntity(final String name, final String description,  final Target target) {
         this.id = 0;
         this.name = name;
         this.description = description;
+        this.target = target;
     }
 
     @Override
@@ -68,5 +73,21 @@ public class TaxEntity {
 
     public void setId(long id) {
         this.id = id;
+    }
+
+    public List<TaxAssignationEntity> getAssignations() {
+        return assignations;
+    }
+
+    public void setAssignations(final List<TaxAssignationEntity> assignations) {
+        this.assignations = assignations;
+    }
+
+    public Target getTarget() {
+        return target;
+    }
+
+    public void setTarget(final Target target) {
+        this.target = target;
     }
 }
