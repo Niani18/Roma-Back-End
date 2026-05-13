@@ -2,6 +2,7 @@ package com.javautn.roma.legalCase.controller;
 
 import com.javautn.roma.legalCase.dto.LegalCaseCreateDto;
 import com.javautn.roma.legalCase.dto.LegalCaseResponseDto;
+import com.javautn.roma.legalCase.dto.LegalCaseUpdateDto;
 import com.javautn.roma.legalCase.service.LegalCaseService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -38,8 +39,8 @@ public class LegalCaseController {
         return ResponseEntity.status(201).body(legalCase);
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<LegalCaseResponseDto> updateLegalCase(@Valid @RequestBody final LegalCaseCreateDto dto, @PathVariable final Long id) {
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<LegalCaseResponseDto> updateLegalCase(@Valid @RequestBody final LegalCaseUpdateDto dto, @PathVariable final Long id) {
         return legalCaseService.updateLegalCase(dto, id).map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
