@@ -4,12 +4,11 @@ import com.javautn.roma.legalCase.entity.LegalCaseEntity;
 import com.javautn.roma.legalCase.repository.LegalCaseRepository;
 import com.javautn.roma.sentence.dto.SentenceCreateDto;
 import com.javautn.roma.sentence.dto.SentenceResponseDto;
+import com.javautn.roma.sentence.dto.SentenceUpdateDto;
 import com.javautn.roma.sentence.entity.SentenceEntity;
 import com.javautn.roma.sentence.repository.SentenceRepository;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Optional;
 
@@ -23,11 +22,19 @@ public class SentenceService {
         this.legalCaseRepository = legalCaseRepository;
     }
 
-    public List<SentenceEntity> getAllSentence() { return  new ArrayList<SentenceEntity>(); }
+    public List<SentenceResponseDto> getAllSentence() {
+        return  sentenceRepository.findAll().stream()
+                .map(sentence -> new SentenceResponseDto(sentence.getId(), sentence.getDescription(), sentence.getLegalCase().getId(), sentence.getApplicationDate(), sentence.getEstimatedEndDate(), sentence.getFinalEndDate()))
+                .toList();
 
-    public Optional<SentenceEntity> getSentenceById(Long id) { return sentenceRepository.findById(id); }
+    }
 
-    public Optional<SentenceEntity> createSentence(final SentenceCreateDto dto) {
+    public Optional<SentenceResponseDto> getSentenceById(Long id) {
+        return sentenceRepository.findById(id)
+                .map(this::toResponseDto);
+    }
+
+    public Optional<SentenceResponseDto> createSentence(final SentenceCreateDto dto) {
         LegalCaseEntity legalCase = legalCaseRepository.findById(dto.getIdLegalCase())
                 .orElseThrow(() -> new RuntimeException("Legal case no encontrado"));
 
@@ -40,22 +47,47 @@ public class SentenceService {
 
         sentence.setLegalCase(legalCase);
 
-        return Optional.of(sentenceRepository.save(sentence));
+        SentenceEntity saved = sentenceRepository.save(sentence);
+        return Optional.of(toResponseDto(saved));
     }
 
-    public Optional<SentenceResponseDto> updateSentence(SentenceCreateDto dto,  Long id) {
+    public Optional<SentenceResponseDto> updateSentence(SentenceUpdateDto dto, Long id) {
         return sentenceRepository.findById(id)
                 .map(sentence -> {
-                    sentence.setDescription(dto.getDescription());
-                    sentence.setApplicationDate(dto.getApplicationDate());
-                    sentence.setEstimatedEndDate(dto.getEstimatedEndDate());
+                    if (dto.getIdLegalCase() != null) {
+                        Optional<LegalCaseEntity> legalCase = legalCaseRepository.findById(dto.getIdLegalCase());
+                        if (legalCase.isEmpty()) {
+                            return null;
+                        }
+                        sentence.setLegalCase(legalCase.get());
+                    }
 
-                    if (sentence.getFinalEndDate() == null) {
-                        sentence.setFinalEndDate(new Date());
+                    if (dto.getDescription() != null) {
+                        sentence.setDescription(dto.getDescription());
+                    }
+                    if (dto.getApplicationDate() != null) {
+                        sentence.setApplicationDate(dto.getApplicationDate());
+                    }
+                    if (dto.getEstimatedEndDate() != null) {
+                        sentence.setEstimatedEndDate(dto.getEstimatedEndDate());
+                    }
+                    if (dto.getFinalEndDate() != null) {
+                        sentence.setFinalEndDate(dto.getFinalEndDate());
                     }
 
                     SentenceEntity saved = sentenceRepository.save(sentence);
-                    return new SentenceResponseDto(saved.getId(), saved.getDescription(), saved.getLegalCase().getId(), saved.getEstimatedEndDate(), saved.getEstimatedEndDate(), saved.getFinalEndDate());
+                    return toResponseDto(saved);
                 });
+    }
+
+    private SentenceResponseDto toResponseDto(SentenceEntity sentence) {
+        return new SentenceResponseDto(
+                sentence.getId(),
+                sentence.getDescription(),
+                sentence.getLegalCase().getId(),
+                sentence.getApplicationDate(),
+                sentence.getEstimatedEndDate(),
+                sentence.getFinalEndDate()
+        );
     }
 }
