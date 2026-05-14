@@ -2,6 +2,7 @@ package com.javautn.roma.legalCase.controller;
 
 import com.javautn.roma.legalCase.dto.LegalCaseCreateDto;
 import com.javautn.roma.legalCase.dto.LegalCaseResponseDto;
+import com.javautn.roma.legalCase.dto.LegalCaseUpdateDto;
 import com.javautn.roma.legalCase.service.LegalCaseService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
@@ -22,25 +23,32 @@ public class LegalCaseController {
 
     @GetMapping("/getAll")
     public ResponseEntity<List<LegalCaseResponseDto>> getAllLegalCases() {
-        return  ResponseEntity.ok(legalCaseService.getAllLegalCase());
+        return  ResponseEntity.ok(legalCaseService.getAllLegalCase().stream()
+                .map(LegalCaseResponseDto::fromLegalCase)
+                .toList());
     }
 
     @GetMapping("/getOne/{id}")
     public ResponseEntity<LegalCaseResponseDto> getOneLegalCase(@PathVariable final Long id) {
         return legalCaseService.getOneLegalCase(id)
+                .map(LegalCaseResponseDto::fromLegalCase)
                 .map(ResponseEntity:: ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/create")
     public ResponseEntity<LegalCaseResponseDto> createLegalCase(@Valid @RequestBody final LegalCaseCreateDto dto) {
-        LegalCaseResponseDto legalCase = legalCaseService.createLegalCase(dto);
-        return ResponseEntity.status(201).body(legalCase);
+        return legalCaseService.createLegalCase(dto)
+                .map(LegalCaseResponseDto::fromLegalCase)
+                .map(legalCase -> ResponseEntity.status(201).body(legalCase))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
-    @PutMapping("/update/{id}")
-    public ResponseEntity<LegalCaseResponseDto> updateLegalCase(@Valid @RequestBody final LegalCaseCreateDto dto, @PathVariable final Long id) {
-        return legalCaseService.updateLegalCase(dto, id).map(ResponseEntity::ok)
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<LegalCaseResponseDto> updateLegalCase(@Valid @RequestBody final LegalCaseUpdateDto dto, @PathVariable final Long id) {
+        return legalCaseService.updateLegalCase(dto, id)
+                .map(LegalCaseResponseDto::fromLegalCase)
+                .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 }

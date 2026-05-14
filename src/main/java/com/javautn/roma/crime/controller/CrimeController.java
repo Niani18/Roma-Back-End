@@ -19,28 +19,31 @@ public class CrimeController {
 
     @GetMapping("/getAll")
     public ResponseEntity<List<CrimeResponseDto>> getAllCrime() {
-        return ResponseEntity.ok(crimeService.getAllCrime());
+        return ResponseEntity.ok(crimeService.getAllCrime().stream()
+                .map(CrimeResponseDto::fromCrime)
+                .toList());
     }
 
     @GetMapping("/getOne/{id}")
     public ResponseEntity<CrimeResponseDto> getOneCrime(@PathVariable final long id) {
         return crimeService.getOneCrime(id)
+                .map(CrimeResponseDto::fromCrime)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }
 
     @PostMapping("/create")
     public ResponseEntity<CrimeResponseDto> createCrime(@Valid @RequestBody final CrimeCreateDto dto) {
-        CrimeResponseDto crime = crimeService.createCrime(dto);
-        if (crime == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.status(201).body(crime);
+        return crimeService.createCrime(dto)
+                .map(CrimeResponseDto::fromCrime)
+                .map(crime -> ResponseEntity.status(201).body(crime))
+                .orElseGet(() -> ResponseEntity.badRequest().build());
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<CrimeResponseDto> updateCrime(@Valid @RequestBody final CrimeCreateDto dto, @PathVariable final long id) {
         return crimeService.updateCrime(dto, id)
+                .map(CrimeResponseDto::fromCrime)
                 .map(ResponseEntity::ok)
                 .orElseGet(() -> ResponseEntity.notFound().build());
     }

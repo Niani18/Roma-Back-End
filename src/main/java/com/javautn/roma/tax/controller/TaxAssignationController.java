@@ -9,8 +9,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -58,10 +56,9 @@ public class TaxAssignationController {
                 .orElse(ResponseEntity.badRequest().build());
     }
 
-    @PutMapping("/pay/{id}")
-    public ResponseEntity<TaxAssignationResponseDTO> payTax(
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<TaxAssignationResponseDTO> updateTaxAssignation(
             @PathVariable long id, @Valid @RequestBody TaxAssignationUpdateDTO dto) {
-        dto.setPaymentDate(Date.from(Instant.now()));
         return assignationService.updateTaxAssignation(id, dto)
                 .map(TaxAssignationResponseDTO::fromTaxAssignation)
                 .map(ResponseEntity::ok)

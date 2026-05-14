@@ -1,7 +1,6 @@
 package com.javautn.roma.crime.service;
 
 import com.javautn.roma.crime.dto.CrimeCreateDto;
-import com.javautn.roma.crime.dto.CrimeResponseDto;
 import com.javautn.roma.crime.entity.CrimeEntity;
 import com.javautn.roma.crime.repository.CrimeRepository;
 import org.springframework.stereotype.Service;
@@ -16,38 +15,32 @@ public class CrimeService {
 
     public CrimeService(CrimeRepository crimeRepository) {this.crimeRepository = crimeRepository; }
 
-    public List<CrimeResponseDto> getAllCrime() {
-        return  crimeRepository.findAll().stream()
-                .map(crime -> new CrimeResponseDto(crime.getId(), crime.getDescription()))
-                .toList();
+    public List<CrimeEntity> getAllCrime() {
+        return crimeRepository.findAll();
     }
 
-    public Optional<CrimeResponseDto> getOneCrime(long id) {
-        Optional<CrimeEntity> crime = crimeRepository.findById(id);
-        return crime.map(crimeEntity -> new CrimeResponseDto(crimeEntity.getId(), crimeEntity.getDescription()));
+    public Optional<CrimeEntity> getOneCrime(long id) {
+        return crimeRepository.findById(id);
     }
 
-    public CrimeResponseDto createCrime(CrimeCreateDto dto){
-        if (crimeRepository.existsByDescription(dto.getDescription())){
-            return null;
+    public Optional<CrimeEntity> createCrime(CrimeCreateDto dto){
+        if (crimeRepository.existsByDescriptionIgnoreCase(dto.getDescription())) {
+            return Optional.empty();
         }
 
         CrimeEntity crime = new CrimeEntity(dto.getDescription());
-        CrimeEntity savedCrime = crimeRepository.save(crime);
-
-        return new CrimeResponseDto(savedCrime.getId(), savedCrime.getDescription());
+        return Optional.of(crimeRepository.save(crime));
     }
 
-    public Optional<CrimeResponseDto> updateCrime(CrimeCreateDto dto, long id) {
-        if (crimeRepository.existsByDescriptionAndIdNot(dto.getDescription(), id)) {
+    public Optional<CrimeEntity> updateCrime(CrimeCreateDto dto, long id) {
+        if (crimeRepository.existsByDescriptionIgnoreCaseAndIdNot(dto.getDescription(), id)) {
             return Optional.empty();
         }
 
         return crimeRepository.findById(id)
                 .map(crime -> {
                     crime.setDescription(dto.getDescription());
-                    CrimeEntity saved = crimeRepository.save(crime);
-                    return new CrimeResponseDto(saved.getId(), saved.getDescription());
+                    return crimeRepository.save(crime);
                 });
     }
 }

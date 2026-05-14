@@ -54,6 +54,14 @@ public class HumanController {
 
     }
 
+    @GetMapping("/citizen/getOneWithLegalCases/{id}")
+    public ResponseEntity<CitizenWithLegalCasesDto> getOneWithLegalCases(@PathVariable long id) {
+        return humanService.getCitizenWithLegalCases(id)
+                .map(CitizenWithLegalCasesDto::fromCitizen)
+                .map(ResponseEntity::ok)
+                .orElse(ResponseEntity.notFound().build());
+    }
+
     @GetMapping("/slave/getOneWithFamily/{id}")
     public ResponseEntity<SlaveWithFamiliesDto> getOneSlaveWithFamily(@PathVariable long id) {
         return humanService.getSlaveByFamily(id)

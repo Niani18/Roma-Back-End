@@ -122,6 +122,10 @@ public class HumanService {
         return citizenRepository.findCitizenWithFamilies(id);
     }
 
+    public Optional<CitizenEntity> getCitizenWithLegalCases(long id) {
+        return citizenRepository.findCitizenWithLegalCases(id);
+    }
+
     public Optional<SlaveEntity> getSlaveByFamily(long id) {
         return slaveRepository.findSlaveWithFamilies(id);
     }

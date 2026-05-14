@@ -101,30 +101,24 @@ public class TaxAssignationService {
         Optional<TaxAssignationEntity> assignation = assignationRepository.findById(id);
         if (assignation.isEmpty()) return Optional.empty();
 
+        TaxAssignationEntity entity = assignation.get();
 
-        // Lo que estas a punto de ver es mierda seca
-
-        if(dto.getAmount().isPresent())
-            assignation.get().setAmount(dto.getAmount().get());
-
-        if(dto.getExpiryDate().isPresent())
-            assignation.get().setExpiryDate(dto.getExpiryDate().get());
-
-        if(dto.getPaymentDate().isPresent())  {
-            assignation.get().setPaymentDate(dto.getPaymentDate().get());
-            assignation.get().setState(StateAsignation.PAID);
+        if(dto.getPaymentDate() != null)  {
+            entity.setPaymentDate(dto.getPaymentDate());
+            entity.setState(StateAsignation.PAID);
         }
 
-        if(dto.getInterest().isPresent())
-            assignation.get().setInterest(dto.getInterest().get());
+        if(dto.getInterest() != null) {
+            entity.setInterest(dto.getInterest());
+        }
 
-        if(dto.getSanction().isPresent()) {
-            assignation.get().setSanction(dto.getSanction().get());
-            if (assignation.get().getState() != StateAsignation.PAID) {
-                assignation.get().setState(StateAsignation.SANCTIONED);
+        if(dto.getSanction() != null && assignation.get().getState() == StateAsignation.PENDING) {
+            entity.setSanction(dto.getSanction());
+            if (entity.getState() != StateAsignation.PAID && !dto.getSanction().isBlank()) {
+                entity.setState(StateAsignation.SANCTIONED);
             }
         }
 
-        return Optional.of(assignationRepository.save(assignation.get()));
+        return Optional.of(assignationRepository.save(entity));
     }
 }

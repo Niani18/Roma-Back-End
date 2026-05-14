@@ -4,6 +4,7 @@ import com.javautn.roma.crime.entity.CrimeEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
 
 public interface CrimeRepository extends JpaRepository<CrimeEntity, Long> {
-    boolean existsByDescription(String description);
-    boolean existsByDescriptionAndIdNot(String name, Long id);
+    boolean existsByDescriptionIgnoreCase(String description);
+
+    boolean existsByDescriptionIgnoreCaseAndIdNot(String description, long id);
 }

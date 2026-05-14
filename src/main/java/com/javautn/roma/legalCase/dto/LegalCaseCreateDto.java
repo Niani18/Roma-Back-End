@@ -11,9 +11,6 @@ public class LegalCaseCreateDto {
     @NotNull
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
     private Date startDate;
-    @NotNull
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
-    private Date endDate;
     @NotBlank
     private String state;
     @NotNull
@@ -21,9 +18,8 @@ public class LegalCaseCreateDto {
     @NotNull
     private Long crimeId;
 
-    public LegalCaseCreateDto(Date startDate, Date endDate, String state, Long citizenId, Long crimeId) {
+    public LegalCaseCreateDto(Date startDate, String state, Long citizenId, Long crimeId) {
         this.startDate = startDate;
-        this.endDate = endDate;
         this.state = state;
         this.citizenId = citizenId;
         this.crimeId = crimeId;
@@ -33,9 +29,6 @@ public class LegalCaseCreateDto {
 
     public Date getStartDate() {return startDate;}
     public void setStartDate(Date startDate) {this.startDate = startDate;}
-
-    public Date getEndDate() {return endDate;}
-    public void setEndDate(Date endDate) {this.endDate = endDate;}
 
     public String getState() {return state;}
     public void setState(String state) {this.state = state;}
