@@ -6,9 +6,9 @@ import com.javautn.roma.sentence.dto.SentenceCreateDto;
 import com.javautn.roma.sentence.dto.SentenceResponseDto;
 import com.javautn.roma.sentence.entity.SentenceEntity;
 import com.javautn.roma.sentence.repository.SentenceRepository;
+import com.javautn.roma.shared.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
 import java.util.Date;
 import java.util.List;
 import java.util.Optional;
@@ -23,13 +23,16 @@ public class SentenceService {
         this.legalCaseRepository = legalCaseRepository;
     }
 
-    public List<SentenceEntity> getAllSentence() { return  new ArrayList<SentenceEntity>(); }
+    public List<SentenceEntity> getAllSentence() { return sentenceRepository.findAll(); }
 
-    public Optional<SentenceEntity> getSentenceById(Long id) { return sentenceRepository.findById(id); }
+    public SentenceEntity getSentenceById(Long id) {
+        return sentenceRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Sentence not found with id " + id));
+    }
 
-    public Optional<SentenceEntity> createSentence(final SentenceCreateDto dto) {
+    public SentenceEntity createSentence(final SentenceCreateDto dto) {
         LegalCaseEntity legalCase = legalCaseRepository.findById(dto.getIdLegalCase())
-                .orElseThrow(() -> new RuntimeException("Legal case no encontrado"));
+                .orElseThrow(() -> new NotFoundException("Legal case not found with id " + dto.getIdLegalCase()));
 
         SentenceEntity sentence = new SentenceEntity(
                 dto.getDescription(),
@@ -40,22 +43,23 @@ public class SentenceService {
 
         sentence.setLegalCase(legalCase);
 
-        return Optional.of(sentenceRepository.save(sentence));
+        return sentenceRepository.save(sentence);
     }
 
-    public Optional<SentenceResponseDto> updateSentence(SentenceCreateDto dto,  Long id) {
-        return sentenceRepository.findById(id)
-                .map(sentence -> {
-                    sentence.setDescription(dto.getDescription());
-                    sentence.setApplicationDate(dto.getApplicationDate());
-                    sentence.setEstimatedEndDate(dto.getEstimatedEndDate());
+    public SentenceResponseDto updateSentence(SentenceCreateDto dto,  Long id) {
+        SentenceEntity sentence = sentenceRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Sentence not found with id " + id));
 
-                    if (sentence.getFinalEndDate() == null) {
-                        sentence.setFinalEndDate(new Date());
-                    }
+        sentence.setDescription(dto.getDescription());
+        sentence.setApplicationDate(dto.getApplicationDate());
+        sentence.setEstimatedEndDate(dto.getEstimatedEndDate());
 
-                    SentenceEntity saved = sentenceRepository.save(sentence);
-                    return new SentenceResponseDto(saved.getId(), saved.getDescription(), saved.getLegalCase().getId(), saved.getEstimatedEndDate(), saved.getEstimatedEndDate(), saved.getFinalEndDate());
-                });
+        if (sentence.getFinalEndDate() == null) {
+            sentence.setFinalEndDate(new Date());
+        }
+
+        SentenceEntity saved = sentenceRepository.save(sentence);
+        return new SentenceResponseDto(saved.getId(), saved.getDescription(), saved.getLegalCase().getId(),
+                saved.getApplicationDate(), saved.getEstimatedEndDate(), saved.getFinalEndDate());
     }
 }

@@ -13,6 +13,8 @@ import com.javautn.roma.tax.entity.TaxAssignationEntity;
 import com.javautn.roma.tax.entity.TaxEntity;
 import com.javautn.roma.tax.repository.TaxAssignationRepository;
 import com.javautn.roma.tax.repository.TaxRepository;
+import com.javautn.roma.shared.exception.BadRequestException;
+import com.javautn.roma.shared.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -41,18 +43,20 @@ public class TaxAssignationService {
         return assignationRepository.findAll();
     }
 
-    public Optional<TaxAssignationEntity> getOne(long id) {
-        return assignationRepository.findById(id);
+    public TaxAssignationEntity getOne(long id) {
+        return assignationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Tax assignation not found with id " + id));
     }
 
-    public Optional<TaxAssignationEntity> createAssignationForFamily(TaxAssignationFamilyCreateDTO dto) {
-        Optional<TaxEntity> tax = taxRepository.findById(dto.getTaxId());
-        if (tax.isEmpty() || tax.get().getTarget() != Target.FAMILY) {
-            return Optional.empty();
+    public TaxAssignationEntity createAssignationForFamily(TaxAssignationFamilyCreateDTO dto) {
+        TaxEntity tax = taxRepository.findById(dto.getTaxId())
+                .orElseThrow(() -> new NotFoundException("Tax not found with id " + dto.getTaxId()));
+        if (tax.getTarget() != Target.FAMILY) {
+            throw new BadRequestException("Tax with id " + dto.getTaxId() + " is not assigned to FAMILY target");
         }
 
-        Optional<FamilyEntity> fam = familyRepository.findById(dto.getFamilyId());
-        if (fam.isEmpty()) return Optional.empty();
+        FamilyEntity fam = familyRepository.findById(dto.getFamilyId())
+                .orElseThrow(() -> new NotFoundException("Family not found with id " + dto.getFamilyId()));
 
         TaxAssignationEntity entity = new TaxAssignationEntity(
                 dto.getAmount(),
@@ -61,22 +65,23 @@ public class TaxAssignationService {
                 StateAsignation.PENDING,
                 0,
                 null,
-                tax.get(),
-                fam.get(),
+                tax,
+                fam,
                 null
         );
 
-        return Optional.of(assignationRepository.save(entity));
+        return assignationRepository.save(entity);
     }
 
-    public Optional<TaxAssignationEntity> createAssignationForProperty(TaxAssignationPropertyCreateDTO dto) {
-        Optional<TaxEntity> tax = taxRepository.findById(dto.getTaxId());
-        if (tax.isEmpty() || tax.get().getTarget() != Target.PROPERTY) {
-            return Optional.empty();
+    public TaxAssignationEntity createAssignationForProperty(TaxAssignationPropertyCreateDTO dto) {
+        TaxEntity tax = taxRepository.findById(dto.getTaxId())
+                .orElseThrow(() -> new NotFoundException("Tax not found with id " + dto.getTaxId()));
+        if (tax.getTarget() != Target.PROPERTY) {
+            throw new BadRequestException("Tax with id " + dto.getTaxId() + " is not assigned to PROPERTY target");
         }
 
-        Optional<PropertyEntity> prop = propertyRepository.findById(dto.getPropertyId());
-        if (prop.isEmpty()) return Optional.empty();
+        PropertyEntity prop = propertyRepository.findById(dto.getPropertyId())
+                .orElseThrow(() -> new NotFoundException("Property not found with id " + dto.getPropertyId()));
 
         TaxAssignationEntity entity = new TaxAssignationEntity(
                 dto.getAmount(),
@@ -85,23 +90,25 @@ public class TaxAssignationService {
                 StateAsignation.PENDING,
                 0,
                 null,
-                tax.get(),
+                tax,
                 null,
-                prop.get()
+                prop
         );
 
-        return Optional.of(assignationRepository.save(entity));
+        return assignationRepository.save(entity);
     }
 
 
 
 
-    public Optional<TaxAssignationEntity> updateTaxAssignation(long id, TaxAssignationUpdateDTO dto) {
+    public TaxAssignationEntity updateTaxAssignation(long id, TaxAssignationUpdateDTO dto) {
 
-        Optional<TaxAssignationEntity> assignation = assignationRepository.findById(id);
-        if (assignation.isEmpty()) return Optional.empty();
+        TaxAssignationEntity entity = assignationRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Tax assignation not found with id " + id));
 
-        TaxAssignationEntity entity = assignation.get();
+        if (dto.getPaymentDate() == null && dto.getInterest() == null && dto.getSanction() == null) {
+            throw new BadRequestException("At least one field must be provided to update tax assignation");
+        }
 
         if(dto.getPaymentDate() != null)  {
             entity.setPaymentDate(dto.getPaymentDate());
@@ -112,13 +119,16 @@ public class TaxAssignationService {
             entity.setInterest(dto.getInterest());
         }
 
-        if(dto.getSanction() != null && assignation.get().getState() == StateAsignation.PENDING) {
+        if(dto.getSanction() != null) {
+            if (entity.getState() != StateAsignation.PENDING) {
+                throw new BadRequestException("Sanction can only be updated while tax assignation is PENDING");
+            }
             entity.setSanction(dto.getSanction());
             if (entity.getState() != StateAsignation.PAID && !dto.getSanction().isBlank()) {
                 entity.setState(StateAsignation.SANCTIONED);
             }
         }
 
-        return Optional.of(assignationRepository.save(entity));
+        return assignationRepository.save(entity);
     }
 }

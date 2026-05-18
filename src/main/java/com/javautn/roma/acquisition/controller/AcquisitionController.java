@@ -4,7 +4,6 @@ import com.javautn.roma.acquisition.dto.AcquisitionCreateDto;
 import com.javautn.roma.acquisition.dto.AcquisitionResponseDto;
 import com.javautn.roma.acquisition.service.AcquisitionService;
 import jakarta.validation.Valid;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
@@ -23,10 +22,7 @@ public class AcquisitionController {
 
     @PostMapping("/create")
     public ResponseEntity<AcquisitionResponseDto> getAcquisition(@Valid @RequestBody AcquisitionCreateDto dto) {
-        return acquisitionService.createAcquisition(dto)
-                .map(AcquisitionResponseDto::toDto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.status(HttpStatus.BAD_REQUEST).build());
+        return ResponseEntity.ok(AcquisitionResponseDto.toDto(acquisitionService.createAcquisition(dto)));
     }
 
 }

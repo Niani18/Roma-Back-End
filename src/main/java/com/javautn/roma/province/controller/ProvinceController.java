@@ -26,9 +26,7 @@ public class ProvinceController {
 
     @GetMapping("/getOne/{id}")
     public ResponseEntity<ProvinceResponseDto> getOneProvince(@PathVariable final long id) {
-        return provinceService.getOneProvince(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(provinceService.getOneProvince(id));
     }
 
     @PostMapping("/create")
@@ -39,8 +37,7 @@ public class ProvinceController {
 
     @PutMapping("/update/{id}")
     public ResponseEntity<ProvinceResponseDto> updateProvince(@Valid @RequestBody final ProvinceCreateDto dto, @PathVariable final long id) {
-        return provinceService.updateProvince(dto, id).map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(provinceService.updateProvince(dto, id));
     }
 
 }

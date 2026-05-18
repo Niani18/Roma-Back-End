@@ -25,10 +25,7 @@ public class FamilyRolController {
 
     @PostMapping("/createFamilyRole")
     public ResponseEntity<FamilyRolResponseDto> createFamilyRole (@Valid @RequestBody FamilyRolCreateDto dto){
-        return familyRolService.crateFamilyRol(dto)
-                .map(FamilyRolResponseDto::toResponseDto)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(FamilyRolResponseDto.toResponseDto(familyRolService.crateFamilyRol(dto)));
     }
 
 

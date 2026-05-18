@@ -7,6 +7,7 @@ import com.javautn.roma.human.entity.CitizenEntity;
 import com.javautn.roma.human.entity.SlaveEntity;
 import com.javautn.roma.human.repository.CitizenRepository;
 import com.javautn.roma.human.repository.SlaveRepository;
+import com.javautn.roma.shared.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
 
@@ -37,96 +38,92 @@ public class HumanService {
         return slaveRepository.findAll();
     }
 
-    public Optional<CitizenEntity> getCitizen(final long id) {
-        return citizenRepository.findById(id);
+    public CitizenEntity getCitizen(final long id) {
+        return citizenRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Citizen not found with id " + id));
     }
 
-    public Optional<SlaveEntity> getSlave(final long id) {
-        return slaveRepository.findById(id);
+    public SlaveEntity getSlave(final long id) {
+        return slaveRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Slave not found with id " + id));
     }
 
-    public Optional<CitizenEntity> createCitizen(CitizenEntity citizen) {
-        final CitizenEntity newCitizen = citizenRepository.saveAndFlush(citizen);
-        return Optional.of(newCitizen);
+    public CitizenEntity createCitizen(CitizenEntity citizen) {
+        return citizenRepository.saveAndFlush(citizen);
     }
 
-    public Optional<SlaveEntity> createSlave(SlaveEntity slave) {
-        final SlaveEntity newSlave = slaveRepository.saveAndFlush(slave);
-        return Optional.of(newSlave);
+    public SlaveEntity createSlave(SlaveEntity slave) {
+        return slaveRepository.saveAndFlush(slave);
     }
 
-    public Optional<CitizenEntity> updateCitizen(final long id, final CitizenEntity citizen) {
-        if (!citizenRepository.existsById(id)) return Optional.empty();
+    public CitizenEntity updateCitizen(final long id, final CitizenEntity citizen) {
+        if (!citizenRepository.existsById(id)) {
+            throw new NotFoundException("Citizen not found with id " + id);
+        }
         citizen.setId(id);
-        return Optional.of(citizenRepository.saveAndFlush(citizen));
+        return citizenRepository.saveAndFlush(citizen);
     }
 
-    public Optional<SlaveEntity> updateSlave(final long id, final SlaveEntity slave) {
-        if (!slaveRepository.existsById(id)) return Optional.empty();
+    public SlaveEntity updateSlave(final long id, final SlaveEntity slave) {
+        if (!slaveRepository.existsById(id)) {
+            throw new NotFoundException("Slave not found with id " + id);
+        }
         slave.setId(id);
-        return Optional.of(slaveRepository.saveAndFlush(slave));
+        return slaveRepository.saveAndFlush(slave);
     }
 
-    public void deleteCitizen(final long id) {
-        if (!citizenRepository.existsById(id)) return;
+    public CitizenEntity deleteCitizen(final long id) {
+        CitizenEntity citizen = getCitizen(id);
         citizenRepository.deleteById(id);
         citizenRepository.flush();
+        return citizen;
     }
 
-    public void deleteSlave(final long id) {
-        if (!slaveRepository.existsById(id)) return;
+    public SlaveEntity deleteSlave(final long id) {
+        SlaveEntity slave = getSlave(id);
         slaveRepository.deleteById(id);
         slaveRepository.flush();
+        return slave;
     }
 
     @Transactional
-    public Optional<CitizenEntity> setDeathDate(final long id) {
-        Optional<CitizenEntity> nuevoFiambre = citizenRepository.findById(id);
-
-        if (nuevoFiambre.isEmpty()) {
-            return Optional.empty();
-        }
-
+    public CitizenEntity setDeathDate(final long id) {
         Date deathDate = new Date();
-        CitizenEntity citizen = nuevoFiambre.get();
+        CitizenEntity citizen = getCitizen(id);
 
         citizen.setDeathDate(deathDate);
 
         familyRolRepository.findByCitizenId(citizen.getId())
                 .forEach(familyRol -> familyRol.setDateOfUnjoining(deathDate));
 
-        return Optional.of(citizenRepository.save(citizen));
+        return citizenRepository.save(citizen);
     }
 
     @Transactional
-    public Optional<SlaveEntity> setDeathDateOfSlaves(final long id) {
-
-        Optional<SlaveEntity> nuevoDesecho = slaveRepository.findById(id);
-
-        if (nuevoDesecho.isEmpty()) {
-            return Optional.empty();
-        }
-
+    public SlaveEntity setDeathDateOfSlaves(final long id) {
         Date deathDate = new Date();
-        SlaveEntity slave = nuevoDesecho.get();
+        SlaveEntity slave = getSlave(id);
 
         slave.setDeathDate(deathDate);
 
         acquisitionRepository.findByStateAndSlaveId(State.ACTIVE, slave.getId())
                 .forEach(acquisition -> acquisition.setState(State.DEATH));
 
-        return Optional.of(slaveRepository.save(slave));
+        return slaveRepository.save(slave);
     }
 
-    public Optional<CitizenEntity> getCitizenByFamily(long id) {
-        return citizenRepository.findCitizenWithFamilies(id);
+    public CitizenEntity getCitizenByFamily(long id) {
+        return citizenRepository.findCitizenWithFamilies(id)
+                .orElseThrow(() -> new NotFoundException("Citizen not found with id " + id));
     }
 
-    public Optional<CitizenEntity> getCitizenWithLegalCases(long id) {
-        return citizenRepository.findCitizenWithLegalCases(id);
+    public CitizenEntity getCitizenWithLegalCases(long id) {
+        return citizenRepository.findCitizenWithLegalCases(id)
+                .orElseThrow(() -> new NotFoundException("Citizen not found with id " + id));
     }
 
-    public Optional<SlaveEntity> getSlaveByFamily(long id) {
-        return slaveRepository.findSlaveWithFamilies(id);
+    public SlaveEntity getSlaveByFamily(long id) {
+        return slaveRepository.findSlaveWithFamilies(id)
+                .orElseThrow(() -> new NotFoundException("Slave not found with id " + id));
     }
 }

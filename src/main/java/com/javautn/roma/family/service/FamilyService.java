@@ -5,10 +5,10 @@ import com.javautn.roma.family.entity.FamilyEntity;
 import com.javautn.roma.family.repository.FamilyRepository;
 import com.javautn.roma.province.entity.ProvinceEntity;
 import com.javautn.roma.province.repository.ProvinceRepository;
+import com.javautn.roma.shared.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class FamilyService {
@@ -26,39 +26,43 @@ public class FamilyService {
     }
 
     public List<FamilyEntity> getFamiliesByProvince(long id) {
+        if (!provinceRepository.existsById(id)) {
+            throw new NotFoundException("Province not found with id " + id);
+        }
         return familyRepository.findByProvinceId(id);
     }
 
-    public Optional<FamilyEntity> getOneFamily(Long id){
-        return familyRepository.findById(id);
+    public FamilyEntity getOneFamily(Long id){
+        return familyRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Family not found with id " + id));
     }
 
 
-    public Optional<FamilyEntity> getOneFamilyWithMembers(long id) {
-        return familyRepository.findFamilyWithMembers(id);
+    public FamilyEntity getOneFamilyWithMembers(long id) {
+        return familyRepository.findFamilyWithMembers(id)
+                .orElseThrow(() -> new NotFoundException("Family not found with id " + id));
     }
 
-    public Optional<FamilyEntity> getOneFamilyWithSlaves(long id) {
-        return familyRepository.findFamilyWithSlaves(id);
+    public FamilyEntity getOneFamilyWithSlaves(long id) {
+        return familyRepository.findFamilyWithSlaves(id)
+                .orElseThrow(() -> new NotFoundException("Family not found with id " + id));
     }
 
-    public Optional<FamilyEntity> getFamilyWithProperties(long id) {
-        return familyRepository.findFamilyWithProperties(id);
+    public FamilyEntity getFamilyWithProperties(long id) {
+        return familyRepository.findFamilyWithProperties(id)
+                .orElseThrow(() -> new NotFoundException("Family not found with id " + id));
     }
 
-    public Optional<FamilyEntity> getFamilyWithTaxAssignations(long id) {
-        return familyRepository.findFamilyWithTaxAssignations(id);
+    public FamilyEntity getFamilyWithTaxAssignations(long id) {
+        return familyRepository.findFamilyWithTaxAssignations(id)
+                .orElseThrow(() -> new NotFoundException("Family not found with id " + id));
     }
 
-    public Optional<FamilyEntity> createFamily (FamilyCreateDto dto){
-        Optional<ProvinceEntity> province = provinceRepository.findById(dto.getProvinceId());
-        if(province.isPresent()) {
-            FamilyEntity fam = new FamilyEntity(dto.getName(), province.get());
-            return Optional.of(familyRepository.save(fam));
-        }
-        else {
-            return  Optional.empty();
-        }
+    public FamilyEntity createFamily (FamilyCreateDto dto){
+        ProvinceEntity province = provinceRepository.findById(dto.getProvinceId())
+                .orElseThrow(() -> new NotFoundException("Province not found with id " + dto.getProvinceId()));
+        FamilyEntity fam = new FamilyEntity(dto.getName(), province);
+        return familyRepository.save(fam);
     }
 
 

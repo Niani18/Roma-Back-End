@@ -3,10 +3,11 @@ package com.javautn.roma.crime.service;
 import com.javautn.roma.crime.dto.CrimeCreateDto;
 import com.javautn.roma.crime.entity.CrimeEntity;
 import com.javautn.roma.crime.repository.CrimeRepository;
+import com.javautn.roma.shared.exception.ConflictException;
+import com.javautn.roma.shared.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class CrimeService {
@@ -19,28 +20,27 @@ public class CrimeService {
         return crimeRepository.findAll();
     }
 
-    public Optional<CrimeEntity> getOneCrime(long id) {
-        return crimeRepository.findById(id);
+    public CrimeEntity getOneCrime(long id) {
+        return crimeRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Crime not found with id " + id));
     }
 
-    public Optional<CrimeEntity> createCrime(CrimeCreateDto dto){
+    public CrimeEntity createCrime(CrimeCreateDto dto){
         if (crimeRepository.existsByDescriptionIgnoreCase(dto.getDescription())) {
-            return Optional.empty();
+            throw new ConflictException("Crime already exists with description '" + dto.getDescription() + "'");
         }
 
         CrimeEntity crime = new CrimeEntity(dto.getDescription());
-        return Optional.of(crimeRepository.save(crime));
+        return crimeRepository.save(crime);
     }
 
-    public Optional<CrimeEntity> updateCrime(CrimeCreateDto dto, long id) {
+    public CrimeEntity updateCrime(CrimeCreateDto dto, long id) {
         if (crimeRepository.existsByDescriptionIgnoreCaseAndIdNot(dto.getDescription(), id)) {
-            return Optional.empty();
+            throw new ConflictException("Crime already exists with description '" + dto.getDescription() + "'");
         }
 
-        return crimeRepository.findById(id)
-                .map(crime -> {
-                    crime.setDescription(dto.getDescription());
-                    return crimeRepository.save(crime);
-                });
+        CrimeEntity crime = getOneCrime(id);
+        crime.setDescription(dto.getDescription());
+        return crimeRepository.save(crime);
     }
 }

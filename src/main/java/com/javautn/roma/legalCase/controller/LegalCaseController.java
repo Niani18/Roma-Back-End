@@ -30,25 +30,16 @@ public class LegalCaseController {
 
     @GetMapping("/getOne/{id}")
     public ResponseEntity<LegalCaseResponseDto> getOneLegalCase(@PathVariable final Long id) {
-        return legalCaseService.getOneLegalCase(id)
-                .map(LegalCaseResponseDto::fromLegalCase)
-                .map(ResponseEntity:: ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(LegalCaseResponseDto.fromLegalCase(legalCaseService.getOneLegalCase(id)));
     }
 
     @PostMapping("/create")
     public ResponseEntity<LegalCaseResponseDto> createLegalCase(@Valid @RequestBody final LegalCaseCreateDto dto) {
-        return legalCaseService.createLegalCase(dto)
-                .map(LegalCaseResponseDto::fromLegalCase)
-                .map(legalCase -> ResponseEntity.status(201).body(legalCase))
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+        return ResponseEntity.status(201).body(LegalCaseResponseDto.fromLegalCase(legalCaseService.createLegalCase(dto)));
     }
 
     @PatchMapping("/update/{id}")
     public ResponseEntity<LegalCaseResponseDto> updateLegalCase(@Valid @RequestBody final LegalCaseUpdateDto dto, @PathVariable final Long id) {
-        return legalCaseService.updateLegalCase(dto, id)
-                .map(LegalCaseResponseDto::fromLegalCase)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(LegalCaseResponseDto.fromLegalCase(legalCaseService.updateLegalCase(dto, id)));
     }
 }

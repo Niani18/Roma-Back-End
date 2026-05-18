@@ -27,22 +27,16 @@ public class SentenceController {
 
     @GetMapping("/getOne/{id}")
     public ResponseEntity<SentenceEntity> getSentenceById(@PathVariable final Long id) {
-        return sentenceService.getSentenceById(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(sentenceService.getSentenceById(id));
     }
 
     @PostMapping("/create")
     public ResponseEntity<SentenceEntity> createSentence(@Valid @RequestBody final SentenceCreateDto dto) {
-        return sentenceService.createSentence(dto)
-                .map(sentence -> ResponseEntity.status(201).body(sentence))
-                .orElseGet(() -> ResponseEntity.badRequest().build());
+        return ResponseEntity.status(201).body(sentenceService.createSentence(dto));
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<SentenceResponseDto> updateSentence(@Valid @RequestBody final SentenceCreateDto dto, @PathVariable final Long id) {
-        return sentenceService.updateSentence(dto, id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(sentenceService.updateSentence(dto, id));
     }
 }

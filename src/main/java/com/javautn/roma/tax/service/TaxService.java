@@ -3,10 +3,10 @@ package com.javautn.roma.tax.service;
 import com.javautn.roma.tax.dto.TaxCreateDTO;
 import com.javautn.roma.tax.entity.TaxEntity;
 import com.javautn.roma.tax.repository.TaxRepository;
+import com.javautn.roma.shared.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class TaxService {
@@ -21,22 +21,27 @@ public class TaxService {
         return taxRepository.findAll();
     }
 
-    public Optional<TaxEntity> getTaxById(final long id) {
-        return taxRepository.findById(id);
+    public TaxEntity getTaxById(final long id) {
+        return taxRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Tax not found with id " + id));
     }
 
-    public Optional<TaxEntity> createTax(final TaxCreateDTO dto) {
-        return  Optional.of(taxRepository.save(dto.newTax()));
+    public TaxEntity createTax(final TaxCreateDTO dto) {
+        return taxRepository.save(dto.newTax());
     }
 
-    public Optional<TaxEntity> updateTax(final long id, final TaxCreateDTO dto) {
-        if (!taxRepository.existsById(id)) return Optional.empty();
+    public TaxEntity updateTax(final long id, final TaxCreateDTO dto) {
+        if (!taxRepository.existsById(id)) {
+            throw new NotFoundException("Tax not found with id " + id);
+        }
         TaxEntity tax = dto.newTax();
         tax.setId(id);
-        return Optional.of(taxRepository.saveAndFlush(tax));
+        return taxRepository.saveAndFlush(tax);
     }
 
-    public void deleteTax(final long id) {
+    public TaxEntity deleteTax(final long id) {
+        TaxEntity tax = getTaxById(id);
         taxRepository.deleteById(id);
+        return tax;
     }
 }
