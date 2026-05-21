@@ -19,7 +19,7 @@ public class LegalCaseEntity {
     @Column(nullable = false)
     private Date startDate;
 
-    @Column (nullable = false)
+    @Column(nullable = true)
     private Date endDate;
 
     @Column(length = 100, nullable = false)

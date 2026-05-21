@@ -8,6 +8,7 @@ import com.javautn.roma.holding.entity.HoldingState;
 import com.javautn.roma.holding.repository.HoldingRepository;
 import com.javautn.roma.property.entity.PropertyEntity;
 import com.javautn.roma.property.repository.PropertyRepository;
+import com.javautn.roma.shared.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -29,21 +30,17 @@ public class HoldingService {
 
     @Transactional
     public HoldingEntity saveHolding (HoldingCreateDto dto) {
-        Optional<FamilyEntity> fam = familyRepository.findById(dto.getFamilyId());
-        Optional<PropertyEntity> prop = propertyRepository.findById(dto.getPropertyId());
+        FamilyEntity family = familyRepository.findById(dto.getFamilyId())
+                .orElseThrow(() -> new NotFoundException("Family not found with id " + dto.getFamilyId()));
+        PropertyEntity property = propertyRepository.findById(dto.getPropertyId())
+                .orElseThrow(() -> new NotFoundException("Property not found with id " + dto.getPropertyId()));
 
-        if (fam.isPresent() && prop.isPresent()) {
-            PropertyEntity property = prop.get();
+        holdingRepository.findByPropertyIdAndState(property.getId(), HoldingState.ACTIVE)
+                .forEach(activeHolding -> activeHolding.setState(HoldingState.INACTIVE));
 
-            holdingRepository.findByPropertyIdAndState(property.getId(), HoldingState.ACTIVE)
-                    .forEach(activeHolding -> activeHolding.setState(HoldingState.INACTIVE));
-
-            Date date = dto.getDate() == null ? new Date() : dto.getDate();
-            HoldingEntity ho = new HoldingEntity(property, fam.get(), dto.getPrice(), date);
-            return holdingRepository.save(ho);
-        }else  {
-            return null;
-        }
+        Date date = dto.getDate() == null ? new Date() : dto.getDate();
+        HoldingEntity ho = new HoldingEntity(property, family, dto.getPrice(), date);
+        return holdingRepository.save(ho);
     }
 
 }

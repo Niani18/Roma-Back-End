@@ -19,29 +19,23 @@ public class CrimeController {
 
     @GetMapping("/getAll")
     public ResponseEntity<List<CrimeResponseDto>> getAllCrime() {
-        return ResponseEntity.ok(crimeService.getAllCrime());
+        return ResponseEntity.ok(crimeService.getAllCrime().stream()
+                .map(CrimeResponseDto::fromCrime)
+                .toList());
     }
 
     @GetMapping("/getOne/{id}")
     public ResponseEntity<CrimeResponseDto> getOneCrime(@PathVariable final long id) {
-        return crimeService.getOneCrime(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(CrimeResponseDto.fromCrime(crimeService.getOneCrime(id)));
     }
 
     @PostMapping("/create")
     public ResponseEntity<CrimeResponseDto> createCrime(@Valid @RequestBody final CrimeCreateDto dto) {
-        CrimeResponseDto crime = crimeService.createCrime(dto);
-        if (crime == null) {
-            return ResponseEntity.badRequest().build();
-        }
-        return ResponseEntity.status(201).body(crime);
+        return ResponseEntity.status(201).body(CrimeResponseDto.fromCrime(crimeService.createCrime(dto)));
     }
 
     @PutMapping("/update/{id}")
     public ResponseEntity<CrimeResponseDto> updateCrime(@Valid @RequestBody final CrimeCreateDto dto, @PathVariable final long id) {
-        return crimeService.updateCrime(dto, id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(CrimeResponseDto.fromCrime(crimeService.updateCrime(dto, id)));
     }
 }

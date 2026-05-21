@@ -17,4 +17,13 @@ public interface CitizenRepository extends JpaRepository<CitizenEntity, Long> {
         where c.id = :id
         """)
     Optional<CitizenEntity> findCitizenWithFamilies(@Param("id") long id);
+
+    @Query("""
+        select distinct c
+        from CitizenEntity c
+        left join fetch c.legalCases lc
+        left join fetch lc.crime
+        where c.id = :id
+        """)
+    Optional<CitizenEntity> findCitizenWithLegalCases(@Param("id") long id);
 }

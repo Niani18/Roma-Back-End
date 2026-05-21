@@ -4,10 +4,10 @@ import com.javautn.roma.province.dto.ProvinceCreateDto;
 import com.javautn.roma.province.dto.ProvinceResponseDto;
 import com.javautn.roma.province.entity.ProvinceEntity;
 import com.javautn.roma.province.repository.ProvinceRepository;
+import com.javautn.roma.shared.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class ProvinceService {
@@ -24,9 +24,10 @@ public class ProvinceService {
                 .toList();
         }
 
-    public Optional<ProvinceResponseDto> getOneProvince(long id) {
-        return provinceRepository.findById(id)
-                .map(provinceEntity -> new ProvinceResponseDto(provinceEntity.getId(), provinceEntity.getName()/*,  provinceEntity.getFamilies())*/));
+    public ProvinceResponseDto getOneProvince(long id) {
+        ProvinceEntity province = provinceRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Province not found with id " + id));
+        return new ProvinceResponseDto(province.getId(), province.getName()/*,  provinceEntity.getFamilies())*/);
     }
 
     public ProvinceResponseDto createProvince(ProvinceCreateDto dto) {
@@ -36,13 +37,12 @@ public class ProvinceService {
         return new ProvinceResponseDto(savedProvince.getId(), savedProvince.getName()/*,  savedProvince.getFamilies()*/);
     }
 
-    public Optional<ProvinceResponseDto> updateProvince(ProvinceCreateDto dto, long id) {
-        return provinceRepository.findById(id)
-                .map(province -> {
-                    province.setName(dto.getName());
-                    ProvinceEntity saved = provinceRepository.save(province);
-                    return new ProvinceResponseDto(saved.getId(), saved.getName()/*,  saved.getFamilies()*/);
-                });
+    public ProvinceResponseDto updateProvince(ProvinceCreateDto dto, long id) {
+        ProvinceEntity province = provinceRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Province not found with id " + id));
+        province.setName(dto.getName());
+        ProvinceEntity saved = provinceRepository.save(province);
+        return new ProvinceResponseDto(saved.getId(), saved.getName()/*,  saved.getFamilies()*/);
     }
 
 }

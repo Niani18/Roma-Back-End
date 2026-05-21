@@ -1,5 +1,7 @@
 package com.javautn.roma.crime.dto;
 
+import com.javautn.roma.crime.entity.CrimeEntity;
+
 public class CrimeResponseDto {
 
     private long id;
@@ -15,4 +17,7 @@ public class CrimeResponseDto {
 
     public String getDescription() {return description;}
 
+    public static CrimeResponseDto fromCrime(CrimeEntity crime) {
+        return new CrimeResponseDto(crime.getId(), crime.getDescription());
+    }
 }

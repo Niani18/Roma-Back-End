@@ -5,14 +5,14 @@ import com.javautn.roma.crime.repository.CrimeRepository;
 import com.javautn.roma.human.entity.CitizenEntity;
 import com.javautn.roma.human.repository.CitizenRepository;
 import com.javautn.roma.legalCase.dto.LegalCaseCreateDto;
-import com.javautn.roma.legalCase.dto.LegalCaseResponseDto;
 import com.javautn.roma.legalCase.dto.LegalCaseUpdateDto;
 import com.javautn.roma.legalCase.entity.LegalCaseEntity;
 import com.javautn.roma.legalCase.repository.LegalCaseRepository;
+import com.javautn.roma.shared.exception.ConflictException;
+import com.javautn.roma.shared.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class LegalCaseService {
@@ -30,66 +30,42 @@ public class LegalCaseService {
         this.crimeRepository = crimeRepository;
     }
 
-    public List<LegalCaseResponseDto> getAllLegalCase(){
-        return legalCaseRepository.findAll().stream()
-                .map(legalCase -> new LegalCaseResponseDto(legalCase.getId(), legalCase.getStartDate(), legalCase.getEndDate(), legalCase.getState()))
-                .toList();
+    public List<LegalCaseEntity> getAllLegalCase(){
+        return legalCaseRepository.findAll();
     }
 
-    public Optional<LegalCaseResponseDto> getOneLegalCase(long id){
+    public LegalCaseEntity getOneLegalCase(long id){
         return legalCaseRepository.findById(id)
-                .map(legalCaseEntity -> new LegalCaseResponseDto(legalCaseEntity.getId(), legalCaseEntity.getStartDate(), legalCaseEntity.getEndDate(), legalCaseEntity.getState()));
+                .orElseThrow(() -> new NotFoundException("Legal case not found with id " + id));
     }
 
-    public LegalCaseResponseDto createLegalCase(LegalCaseCreateDto dto){
+    public LegalCaseEntity createLegalCase(LegalCaseCreateDto dto){
         CitizenEntity citizen = citizenRepository.findById(dto.getCitizenId())
-                .orElseThrow(() -> new IllegalArgumentException("Citizen not found"));
+                .orElseThrow(() -> new NotFoundException("Citizen not found with id " + dto.getCitizenId()));
         CrimeEntity crime = crimeRepository.findById(dto.getCrimeId())
-                .orElseThrow(() -> new IllegalArgumentException("Crime not found"));
+                .orElseThrow(() -> new NotFoundException("Crime not found with id " + dto.getCrimeId()));
 
         LegalCaseEntity legalCase = new LegalCaseEntity(
                 dto.getStartDate(),
-                dto.getEndDate(),
+                null,
                 dto.getState(),
                 citizen,
                 crime
         );
-        LegalCaseEntity savedLegalCase = legalCaseRepository.save(legalCase);
 
-        return new LegalCaseResponseDto(savedLegalCase.getId(), savedLegalCase.getStartDate(), savedLegalCase.getEndDate(), savedLegalCase.getState());
+        return legalCaseRepository.save(legalCase);
     }
 
-    public Optional<LegalCaseResponseDto> updateLegalCase(LegalCaseUpdateDto dto, long id){
-        return legalCaseRepository.findById(id)
-                .map(legalCase -> {
-                    if (dto.getCitizenId() != null) {
-                        Optional<CitizenEntity> citizen = citizenRepository.findById(dto.getCitizenId());
-                        if (citizen.isEmpty()) {
-                            return null;
-                        }
-                        legalCase.setCitizen(citizen.get());
-                    }
+    public LegalCaseEntity updateLegalCase(LegalCaseUpdateDto dto, long id){
 
-                    if (dto.getCrimeId() != null) {
-                        Optional<CrimeEntity> crime = crimeRepository.findById(dto.getCrimeId());
-                        if (crime.isEmpty()) {
-                            return null;
-                        }
-                        legalCase.setCrime(crime.get());
-                    }
+        LegalCaseEntity legalCase = getOneLegalCase(id);
 
-                    if (dto.getStartDate() != null) {
-                        legalCase.setStartDate(dto.getStartDate());
-                    }
-                    if (dto.getEndDate() != null) {
-                        legalCase.setEndDate(dto.getEndDate());
-                    }
-                    if (dto.getState() != null) {
-                        legalCase.setState(dto.getState());
-                    }
+        if(legalCase.getEndDate() != null){
+            throw new ConflictException("Legal case with id " + id + " is already closed");
+        }
 
-                    LegalCaseEntity saved = legalCaseRepository.save(legalCase);
-                    return new LegalCaseResponseDto(saved.getId(), saved.getStartDate(), saved.getEndDate(), saved.getState());
-                });
+        legalCase.setEndDate(dto.getEndDate());
+        legalCase.setState(dto.getState());
+        return legalCaseRepository.save(legalCase);
     }
 }

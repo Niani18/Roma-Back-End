@@ -8,8 +8,6 @@ import com.javautn.roma.property.dto.PropertyWithOwnersDto;
 import com.javautn.roma.property.entity.PropertyEntity;
 import com.javautn.roma.property.service.PropertyService;
 import jakarta.validation.Valid;
-import org.springframework.beans.factory.annotation.Value;
-import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
@@ -32,24 +30,18 @@ public class PropertyController {
 
     @GetMapping("/getOneWithOwners/{id}")
     public ResponseEntity<PropertyWithOwnersDto> getOneWithOwner(@PathVariable long id) {
-        return propertyService.findPropertyWithOwners(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(propertyService.findPropertyWithOwners(id));
     }
 
     @GetMapping("/getAllHolding/{id}")
     public ResponseEntity<PropertyWithAllHoldingsDto> getAllHolding(@PathVariable long id) {
-        return propertyService.findOnePropertyWithAllHoldings(id)
-                .map(ResponseEntity::ok)
-                .orElseGet(() -> ResponseEntity.notFound().build());
+        return ResponseEntity.ok(propertyService.findOnePropertyWithAllHoldings(id));
     }
 
     @GetMapping("/listTaxes/{id}")
     public ResponseEntity<PropertyTaxAssignationsResponseDTO> listTaxes(@PathVariable final long id) {
-        return propertyService.findPropertyWithTaxAssignations(id)
-                .map(PropertyTaxAssignationsResponseDTO::fromProperty)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(PropertyTaxAssignationsResponseDTO.fromProperty(
+                propertyService.findPropertyWithTaxAssignations(id)));
     }
 
     @GetMapping("/getAll")
@@ -62,10 +54,8 @@ public class PropertyController {
 
     @GetMapping("/getOne/{id}")
     public ResponseEntity<PropertyResponseDto> getOneProperty(@PathVariable long id) {
-        return propertyService.findPropertyEntity(id).map(pr -> {
-            PropertyResponseDto MIBOMBOOOO = new PropertyResponseDto(pr.getId(), pr.getName(), pr.getDescription());
-            return ResponseEntity.ok(MIBOMBOOOO);
-        }).orElse(ResponseEntity.status(HttpStatus.NOT_FOUND).build());
+        PropertyEntity property = propertyService.findPropertyEntity(id);
+        return ResponseEntity.ok(PropertyResponseDto.fromProperty(property));
     }
 
     @PostMapping("/createProperty")

@@ -28,34 +28,23 @@ public class FamilyController {
 
     @GetMapping("/getOne/{id}")
     public ResponseEntity<FamilyResponseDto> getOne(@PathVariable long id) {
-        return familyService.getOneFamily(id)
-                .map(FamilyResponseDto::fromFamily)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(FamilyResponseDto.fromFamily(familyService.getOneFamily(id)));
     }
 
     @GetMapping("/getOneWithProperties/{id}")
     public ResponseEntity<FamilyWithPropertiesDto> getOneWithProperties(@PathVariable long id) {
-        return familyService.getFamilyWithProperties(id)
-                .map(FamilyWithPropertiesDto::fromFamily)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(FamilyWithPropertiesDto.fromFamily(familyService.getFamilyWithProperties(id)));
     }
 
     @GetMapping("/getOneWithMembers/{id}")
     public ResponseEntity<FamilyWithMembersDto> getOneWithMembers(@PathVariable long id) {
-        return familyService.getOneFamilyWithMembers(id)
-                .map(FamilyWithMembersDto::fromFamily)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(FamilyWithMembersDto.fromFamily(familyService.getOneFamilyWithMembers(id)));
     }
 
     @GetMapping("/listTaxes/{id}")
     public ResponseEntity<FamilyTaxAssignationsResponseDTO> listTaxes(@PathVariable final long id) {
-        return familyService.getFamilyWithTaxAssignations(id)
-                .map(FamilyTaxAssignationsResponseDTO::fromFamily)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(FamilyTaxAssignationsResponseDTO.fromFamily(
+                familyService.getFamilyWithTaxAssignations(id)));
     }
 
     @GetMapping("/getAllByProvince/{id}")
@@ -67,17 +56,11 @@ public class FamilyController {
 
     @GetMapping("/getOneFamilyWithSlaves/{id}")
     public ResponseEntity<FamilyWithSlavesDto> getOneFamilyWithSlaves(@PathVariable long id) {
-        return familyService.getOneFamilyWithSlaves(id)
-                .map(FamilyWithSlavesDto::fromFamily)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(FamilyWithSlavesDto.fromFamily(familyService.getOneFamilyWithSlaves(id)));
     }
 
     @PostMapping("/create")
     public ResponseEntity<FamilyResponseDto> create(@Valid @RequestBody FamilyCreateDto dto){
-        return familyService.createFamily(dto)
-                .map(FamilyResponseDto::fromFamily)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.badRequest().build());
+        return ResponseEntity.ok(FamilyResponseDto.fromFamily(familyService.createFamily(dto)));
     }
 }

@@ -9,10 +9,10 @@ import com.javautn.roma.family.service.FamilyService;
 import com.javautn.roma.human.entity.SlaveEntity;
 import com.javautn.roma.human.service.HumanService;
 import jakarta.transaction.Transactional;
+import com.javautn.roma.shared.exception.BadRequestException;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
-import java.util.Optional;
 
 @Service
 public class AcquisitionService {
@@ -28,13 +28,13 @@ public class AcquisitionService {
     }
 
     @Transactional
-    public Optional<AcquisitionEntity> createAcquisition(AcquisitionCreateDto dto) {
+    public AcquisitionEntity createAcquisition(AcquisitionCreateDto dto) {
 
-        Optional<SlaveEntity> slave = humanService.getSlave(dto.getSlave());
-        Optional<FamilyEntity> family = familyService.getOneFamily(dto.getFamily());
+        SlaveEntity slave = humanService.getSlave(dto.getSlave());
+        FamilyEntity family = familyService.getOneFamily(dto.getFamily());
 
-        if (slave.isEmpty() ||  family.isEmpty() || slave.get().getDeathDate() != null) {
-            return Optional.empty();
+        if (slave.getDeathDate() != null) {
+            throw new BadRequestException("Cannot create acquisition for dead slave with id " + dto.getSlave());
         }
 
         acquisitionRepository.findByStateAndSlaveId(State.ACTIVE, dto.getSlave())
@@ -44,9 +44,9 @@ public class AcquisitionService {
 
 
         Date date = dto.getDate() != null ? dto.getDate() : new Date();
-        AcquisitionEntity ac = new AcquisitionEntity(dto.getPrice(), date, slave.get(), family.get(), State.ACTIVE);
+        AcquisitionEntity ac = new AcquisitionEntity(dto.getPrice(), date, slave, family, State.ACTIVE);
 
-        return Optional.of(acquisitionRepository.save(ac));
+        return acquisitionRepository.save(ac);
 
     }
 

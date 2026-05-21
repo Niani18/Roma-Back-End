@@ -8,10 +8,10 @@ import com.javautn.roma.property.dto.PropertyWithAllHoldingsDto;
 import com.javautn.roma.property.dto.PropertyWithOwnersDto;
 import com.javautn.roma.property.entity.PropertyEntity;
 import com.javautn.roma.property.repository.PropertyRepository;
+import com.javautn.roma.shared.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class PropertyService {
@@ -28,17 +28,19 @@ public class PropertyService {
                 .toList();
     }
 
-    public Optional<PropertyWithOwnersDto> findPropertyWithOwners(long id) {
+    public PropertyWithOwnersDto findPropertyWithOwners(long id) {
         return propertyRepository.findPropertyWithOwners(id)
-                .map(this::toPropertyWithOwnersDto);
+                .map(this::toPropertyWithOwnersDto)
+                .orElseThrow(() -> new NotFoundException("Property not found with id " + id));
     }
 
     public List<PropertyEntity> findAllPropertyEntities() {
         return propertyRepository.findAll();
     }
 
-    public Optional<PropertyEntity> findPropertyEntity(long id) {
-        return propertyRepository.findById(id);
+    public PropertyEntity findPropertyEntity(long id) {
+        return propertyRepository.findById(id)
+                .orElseThrow(() -> new NotFoundException("Property not found with id " + id));
     }
 
     public PropertyEntity createProperty(PropertyCreateDto dto) {
@@ -46,13 +48,15 @@ public class PropertyService {
         return propertyRepository.save(newEntity);
     }
 
-    public Optional<PropertyWithAllHoldingsDto> findOnePropertyWithAllHoldings (long id) {
+    public PropertyWithAllHoldingsDto findOnePropertyWithAllHoldings (long id) {
         return propertyRepository.findAllHoldingsWithOwners(id)
-                .map(this::toPropertyWithAllHoldingsDto);
+                .map(this::toPropertyWithAllHoldingsDto)
+                .orElseThrow(() -> new NotFoundException("Property not found with id " + id));
     }
 
-    public Optional<PropertyEntity> findPropertyWithTaxAssignations(long id) {
-        return propertyRepository.findPropertyWithTaxAssignations(id);
+    public PropertyEntity findPropertyWithTaxAssignations(long id) {
+        return propertyRepository.findPropertyWithTaxAssignations(id)
+                .orElseThrow(() -> new NotFoundException("Property not found with id " + id));
     }
 
     private PropertyWithOwnersDto toPropertyWithOwnersDto(PropertyEntity property) {

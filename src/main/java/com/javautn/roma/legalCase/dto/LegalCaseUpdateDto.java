@@ -1,33 +1,24 @@
 package com.javautn.roma.legalCase.dto;
 
 import com.fasterxml.jackson.annotation.JsonFormat;
-import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.NotNull;
 
 import java.util.Date;
 
 public class LegalCaseUpdateDto {
 
-    @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
-    private Date startDate;
-
+    @NotNull
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
     private Date endDate;
-
-    @Pattern(regexp = ".*\\S.*", message = "state must not be blank")
+    @NotNull
     private String state;
 
-    private Long citizenId;
-
-    private Long crimeId;
-
-    public LegalCaseUpdateDto() {}
-
-    public Date getStartDate() {
-        return startDate;
+    public LegalCaseUpdateDto() {
     }
 
-    public void setStartDate(Date startDate) {
-        this.startDate = startDate;
+    public LegalCaseUpdateDto(Date endDate,  String state) {
+        this.state = state;
+        this.endDate = endDate;
     }
 
     public Date getEndDate() {
@@ -44,21 +35,5 @@ public class LegalCaseUpdateDto {
 
     public void setState(String state) {
         this.state = state;
-    }
-
-    public Long getCitizenId() {
-        return citizenId;
-    }
-
-    public void setCitizenId(Long citizenId) {
-        this.citizenId = citizenId;
-    }
-
-    public Long getCrimeId() {
-        return crimeId;
-    }
-
-    public void setCrimeId(Long crimeId) {
-        this.crimeId = crimeId;
     }
 }

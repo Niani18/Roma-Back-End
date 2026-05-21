@@ -9,8 +9,6 @@ import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
 
-import java.time.Instant;
-import java.util.Date;
 import java.util.List;
 
 @RestController
@@ -34,38 +32,28 @@ public class TaxAssignationController {
 
     @GetMapping("/getOne/{id}")
     public ResponseEntity<TaxAssignationResponseDTO> getOneAssignation(@PathVariable long id) {
-        return assignationService.getOne(id)
-                .map(TaxAssignationResponseDTO::fromTaxAssignation)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(TaxAssignationResponseDTO.fromTaxAssignation(assignationService.getOne(id)));
     }
 
     @PostMapping("/createForFamily")
     public ResponseEntity<TaxAssignationResponseDTO> createAssignationForFamily(
             @Valid @RequestBody TaxAssignationFamilyCreateDTO dto) {
-        return assignationService.createAssignationForFamily(dto)
-                .map(TaxAssignationResponseDTO::fromTaxAssignation)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.badRequest().build());
+        return ResponseEntity.ok(TaxAssignationResponseDTO.fromTaxAssignation(
+                assignationService.createAssignationForFamily(dto)));
     }
 
     @PostMapping("/createForProperty")
     public ResponseEntity<TaxAssignationResponseDTO> createAssignationForProperty(
             @Valid @RequestBody TaxAssignationPropertyCreateDTO dto) {
-        return assignationService.createAssignationForProperty(dto)
-                .map(TaxAssignationResponseDTO::fromTaxAssignation)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.badRequest().build());
+        return ResponseEntity.ok(TaxAssignationResponseDTO.fromTaxAssignation(
+                assignationService.createAssignationForProperty(dto)));
     }
 
-    @PutMapping("/pay/{id}")
-    public ResponseEntity<TaxAssignationResponseDTO> payTax(
+    @PatchMapping("/update/{id}")
+    public ResponseEntity<TaxAssignationResponseDTO> updateTaxAssignation(
             @PathVariable long id, @Valid @RequestBody TaxAssignationUpdateDTO dto) {
-        dto.setPaymentDate(Date.from(Instant.now()));
-        return assignationService.updateTaxAssignation(id, dto)
-                .map(TaxAssignationResponseDTO::fromTaxAssignation)
-                .map(ResponseEntity::ok)
-                .orElse(ResponseEntity.notFound().build());
+        return ResponseEntity.ok(TaxAssignationResponseDTO.fromTaxAssignation(
+                assignationService.updateTaxAssignation(id, dto)));
     }
 
 
