@@ -1,9 +1,12 @@
 package com.javautn.roma.auth.config;
 
 import com.nimbusds.jose.jwk.source.ImmutableSecret;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
+import org.springframework.http.MediaType;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configurers.AbstractHttpConfigurer;
@@ -22,6 +25,8 @@ import javax.crypto.spec.SecretKeySpec;
 @Configuration
 @EnableMethodSecurity
 public class SecurityConfig {
+
+    private static final Logger logger = LoggerFactory.getLogger(SecurityConfig.class);
 
     @Value("${jwt.secret}")
     private String jwtSecret;
@@ -42,6 +47,16 @@ public class SecurityConfig {
                         oauth2.jwt(jwt ->
                                 jwt.jwtAuthenticationConverter(jwtAuthenticationConverter())
                         )
+                )
+                .exceptionHandling(exception -> exception
+                        .authenticationEntryPoint((request, response, authException) -> {
+                            logger.warn("Unauthorized request: {}", authException.getMessage());
+                            writeErrorResponse(response, 401, "Authentication required");
+                        })
+                        .accessDeniedHandler((request, response, accessDeniedException) -> {
+                            logger.warn("Forbidden request: {}", accessDeniedException.getMessage());
+                            writeErrorResponse(response, 403, "Access denied");
+                        })
                 )
                 .build();
     }
@@ -79,5 +94,12 @@ public class SecurityConfig {
 
     private SecretKey secretKey() {
         return new SecretKeySpec(jwtSecret.getBytes(), "HmacSHA256");
+    }
+
+    private void writeErrorResponse(jakarta.servlet.http.HttpServletResponse response, int status, String message)
+            throws java.io.IOException {
+        response.setStatus(status);
+        response.setContentType(MediaType.APPLICATION_JSON_VALUE);
+        response.getWriter().write("{\"status\":" + status + ",\"message\":\"" + message + "\"}");
     }
 }

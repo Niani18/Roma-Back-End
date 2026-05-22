@@ -2,8 +2,13 @@ package com.javautn.roma.auth.service;
 
 import com.javautn.roma.auth.dto.LoginRequestDto;
 import com.javautn.roma.auth.dto.LoginResponseDto;
+import com.javautn.roma.auth.dto.RegisterCreateDto;
+import com.javautn.roma.auth.dto.RegisterResponseDto;
+import com.javautn.roma.auth.entity.Role;
 import com.javautn.roma.auth.entity.UserEntity;
 import com.javautn.roma.auth.repository.UserRepository;
+import com.javautn.roma.human.entity.CitizenEntity;
+import com.javautn.roma.human.service.HumanService;
 import com.javautn.roma.shared.exception.UnauthorizedException;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
@@ -20,15 +25,18 @@ public class AuthService {
     private final UserRepository userRepository;
     private final PasswordEncoder passwordEncoder;
     private final JwtEncoder jwtEncoder;
+    private final HumanService humanService;
 
     public AuthService(
             UserRepository userRepository,
             PasswordEncoder passwordEncoder,
-            JwtEncoder jwtEncoder
+            JwtEncoder jwtEncoder,
+            HumanService humanService
     ) {
         this.userRepository = userRepository;
         this.passwordEncoder = passwordEncoder;
         this.jwtEncoder = jwtEncoder;
+        this.humanService = humanService;
     }
 
     public LoginResponseDto login(LoginRequestDto dto) {
@@ -47,6 +55,23 @@ public class AuthService {
         String token = generateToken(user);
 
         return new LoginResponseDto(token);
+    }
+
+    public RegisterResponseDto register(RegisterCreateDto dto) {
+        CitizenEntity citizen = humanService.getCitizen(dto.getCitizenId());
+        if (!dto.getPassword().equals(dto.getConfirmPassword())) {
+            throw new UnauthorizedException("Passwords do not match");
+        }
+
+        UserEntity newUser = userRepository.save(new UserEntity(
+                dto.getUsername(),
+                passwordEncoder.encode(dto.getPassword()),
+                Role.USER,
+                citizen
+        ));
+
+        return RegisterResponseDto.fromResponseDto(newUser);
+
     }
 
     private String generateToken(UserEntity user) {

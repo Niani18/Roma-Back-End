@@ -7,6 +7,7 @@ import com.javautn.roma.tax.dto.TaxAssignationUpdateDTO;
 import com.javautn.roma.tax.service.TaxAssignationService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -23,6 +24,7 @@ public class TaxAssignationController {
 
 
     @GetMapping("/getAll")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<TaxAssignationResponseDTO>> getAll() {
         return ResponseEntity.ok(
                 assignationService.getAll().stream()
@@ -31,11 +33,13 @@ public class TaxAssignationController {
     }
 
     @GetMapping("/getOne/{id}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @authorizationService.canAccessTaxAssignation(#id))")
     public ResponseEntity<TaxAssignationResponseDTO> getOneAssignation(@PathVariable long id) {
         return ResponseEntity.ok(TaxAssignationResponseDTO.fromTaxAssignation(assignationService.getOne(id)));
     }
 
     @PostMapping("/createForFamily")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TaxAssignationResponseDTO> createAssignationForFamily(
             @Valid @RequestBody TaxAssignationFamilyCreateDTO dto) {
         return ResponseEntity.ok(TaxAssignationResponseDTO.fromTaxAssignation(
@@ -43,6 +47,7 @@ public class TaxAssignationController {
     }
 
     @PostMapping("/createForProperty")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TaxAssignationResponseDTO> createAssignationForProperty(
             @Valid @RequestBody TaxAssignationPropertyCreateDTO dto) {
         return ResponseEntity.ok(TaxAssignationResponseDTO.fromTaxAssignation(
@@ -50,6 +55,7 @@ public class TaxAssignationController {
     }
 
     @PatchMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<TaxAssignationResponseDTO> updateTaxAssignation(
             @PathVariable long id, @Valid @RequestBody TaxAssignationUpdateDTO dto) {
         return ResponseEntity.ok(TaxAssignationResponseDTO.fromTaxAssignation(

@@ -8,6 +8,7 @@ import com.javautn.roma.familyRol.service.FamilyRolService;
 import com.javautn.roma.human.dto.CitizenResponseDTO;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ public class FamilyRolController {
     }
 
     @PostMapping("/createFamilyRole")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<FamilyRolResponseDto> createFamilyRole (@Valid @RequestBody FamilyRolCreateDto dto){
         return ResponseEntity.ok(FamilyRolResponseDto.toResponseDto(familyRolService.crateFamilyRol(dto)));
     }

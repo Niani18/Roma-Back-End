@@ -8,6 +8,7 @@ import com.javautn.roma.holding.service.HoldingService;
 import com.javautn.roma.property.dto.PropertyResponseDto;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
@@ -24,6 +25,7 @@ public class HoldingController {
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<HoldingResponseDto> createHolding (@Valid @RequestBody HoldingCreateDto dto){
 
         HoldingEntity hold = holdingService.saveHolding(dto);

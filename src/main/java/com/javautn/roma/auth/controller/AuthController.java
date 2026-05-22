@@ -2,9 +2,12 @@ package com.javautn.roma.auth.controller;
 
 import com.javautn.roma.auth.dto.LoginRequestDto;
 import com.javautn.roma.auth.dto.LoginResponseDto;
+import com.javautn.roma.auth.dto.RegisterCreateDto;
+import com.javautn.roma.auth.dto.RegisterResponseDto;
 import com.javautn.roma.auth.service.AuthService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 @RestController
@@ -22,5 +25,11 @@ public class AuthController {
             @Valid @RequestBody final LoginRequestDto dto
     ) {
         return ResponseEntity.ok(authService.login(dto));
+    }
+
+    @PostMapping("/register")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<RegisterResponseDto> register(@Valid @RequestBody final RegisterCreateDto dto){
+        return ResponseEntity.ok(authService.register(dto));
     }
 }

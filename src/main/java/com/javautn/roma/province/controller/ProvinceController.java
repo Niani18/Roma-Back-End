@@ -5,6 +5,7 @@ import com.javautn.roma.province.dto.ProvinceResponseDto;
 import com.javautn.roma.province.service.ProvinceService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -20,22 +21,26 @@ public class ProvinceController {
     }
 
     @GetMapping("/getAll")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<ProvinceResponseDto>> getAllProvinces() {
         return ResponseEntity.ok(provinceService.getAllProvinces());
     }
 
     @GetMapping("/getOne/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProvinceResponseDto> getOneProvince(@PathVariable final long id) {
         return ResponseEntity.ok(provinceService.getOneProvince(id));
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProvinceResponseDto> createProvince(@Valid @RequestBody final ProvinceCreateDto dto) {
         ProvinceResponseDto province = provinceService.createProvince(dto);
         return ResponseEntity.status(201).body(province);
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<ProvinceResponseDto> updateProvince(@Valid @RequestBody final ProvinceCreateDto dto, @PathVariable final long id) {
         return ResponseEntity.ok(provinceService.updateProvince(dto, id));
     }

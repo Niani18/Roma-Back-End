@@ -6,6 +6,7 @@ import com.javautn.roma.sentence.entity.SentenceEntity;
 import com.javautn.roma.sentence.service.SentenceService;
 import jakarta.validation.Valid;
 import org.springframework.http.ResponseEntity;
+import org.springframework.security.access.prepost.PreAuthorize;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
@@ -21,21 +22,25 @@ public class SentenceController {
     }
 
     @GetMapping("/getAll")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<List<SentenceEntity>> getAllSentence() {
         return ResponseEntity.ok(sentenceService.getAllSentence());
     }
 
     @GetMapping("/getOne/{id}")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @authorizationService.canAccessSentence(#id))")
     public ResponseEntity<SentenceEntity> getSentenceById(@PathVariable final Long id) {
         return ResponseEntity.ok(sentenceService.getSentenceById(id));
     }
 
     @PostMapping("/create")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SentenceEntity> createSentence(@Valid @RequestBody final SentenceCreateDto dto) {
         return ResponseEntity.status(201).body(sentenceService.createSentence(dto));
     }
 
     @PutMapping("/update/{id}")
+    @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<SentenceResponseDto> updateSentence(@Valid @RequestBody final SentenceCreateDto dto, @PathVariable final Long id) {
         return ResponseEntity.ok(sentenceService.updateSentence(dto, id));
     }
