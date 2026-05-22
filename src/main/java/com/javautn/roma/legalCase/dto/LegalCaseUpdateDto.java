@@ -11,12 +11,12 @@ public class LegalCaseUpdateDto {
     @JsonFormat(pattern = "dd/MM/yyyy HH:mm:ss", timezone = "America/Argentina/Buenos_Aires")
     private Date endDate;
     @NotNull
-    private String state;
+    private Boolean state;
 
     public LegalCaseUpdateDto() {
     }
 
-    public LegalCaseUpdateDto(Date endDate,  String state) {
+    public LegalCaseUpdateDto(Date endDate, Boolean state) {
         this.state = state;
         this.endDate = endDate;
     }
@@ -29,11 +29,11 @@ public class LegalCaseUpdateDto {
         this.endDate = endDate;
     }
 
-    public String getState() {
+    public Boolean getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(Boolean state) {
         this.state = state;
     }
 }

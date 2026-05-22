@@ -22,8 +22,8 @@ public class LegalCaseEntity {
     @Column(nullable = true)
     private Date endDate;
 
-    @Column(length = 100, nullable = false)
-    private String state;
+    @Column(nullable = false)
+    private boolean state;
 
     @ManyToOne (fetch = FetchType.LAZY)
     @JoinColumn(name = "citizen_id", nullable = false)
@@ -35,7 +35,7 @@ public class LegalCaseEntity {
 
     protected LegalCaseEntity() {}
 
-    public LegalCaseEntity(Date startDate, Date endDate, String state, CitizenEntity citizen, CrimeEntity crime) {
+    public LegalCaseEntity(Date startDate, Date endDate, boolean state, CitizenEntity citizen, CrimeEntity crime) {
         this.startDate = startDate;
         this.endDate = endDate;
         this.state = state;
@@ -55,9 +55,9 @@ public class LegalCaseEntity {
 
     public void setEndDate(Date endDate) { this.endDate = endDate; }
 
-    public String getState() { return state; }
+    public boolean getState() { return state; }
 
-    public void setState(String state) { this.state = state; }
+    public void setState(boolean state) { this.state = state; }
 
     public CitizenEntity getCitizen() { return citizen; }
 
