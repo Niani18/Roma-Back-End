@@ -9,11 +9,11 @@ public class CitizenLegalCaseDto {
     private long id;
     private Date startDate;
     private Date endDate;
-    private String state;
+    private boolean state;
     private long crimeId;
     private String crimeDescription;
 
-    public CitizenLegalCaseDto(long id, Date startDate, Date endDate, String state, long crimeId, String crimeDescription) {
+    public CitizenLegalCaseDto(long id, Date startDate, Date endDate, boolean state, long crimeId, String crimeDescription) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -34,7 +34,7 @@ public class CitizenLegalCaseDto {
         return endDate;
     }
 
-    public String getState() {
+    public boolean getState() {
         return state;
     }
 

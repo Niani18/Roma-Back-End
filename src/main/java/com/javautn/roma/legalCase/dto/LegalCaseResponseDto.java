@@ -12,13 +12,13 @@ public class LegalCaseResponseDto {
     private long id;
     private Date startDate;
     private Date endDate;
-    private String state;
+    private boolean state;
     private CrimeResponseDto crime;
     private CitizenResponseDTO citizen;
 
     public LegalCaseResponseDto() {}
 
-    public LegalCaseResponseDto(long id, Date startDate, Date endDate, String state, CrimeResponseDto crime, CitizenResponseDTO citizen) {
+    public LegalCaseResponseDto(long id, Date startDate, Date endDate, boolean state, CrimeResponseDto crime, CitizenResponseDTO citizen) {
         this.id = id;
         this.startDate = startDate;
         this.endDate = endDate;
@@ -51,11 +51,11 @@ public class LegalCaseResponseDto {
         this.endDate = endDate;
     }
 
-    public String getState() {
+    public boolean getState() {
         return state;
     }
 
-    public void setState(String state) {
+    public void setState(boolean state) {
         this.state = state;
     }
 

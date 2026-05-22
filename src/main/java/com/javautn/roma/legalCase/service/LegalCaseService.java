@@ -48,7 +48,7 @@ public class LegalCaseService {
         LegalCaseEntity legalCase = new LegalCaseEntity(
                 dto.getStartDate(),
                 null,
-                dto.getState(),
+                false,
                 citizen,
                 crime
         );
