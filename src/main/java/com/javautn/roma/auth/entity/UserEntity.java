@@ -73,4 +73,8 @@ public class UserEntity {
     public void setCitizen(CitizenEntity citizen) {
         this.citizen = citizen;
     }
+
+    public Long getCitizenId() {
+        return citizen == null ? null : citizen.getId();
+    }
 }

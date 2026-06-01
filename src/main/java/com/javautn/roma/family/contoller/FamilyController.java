@@ -64,7 +64,9 @@ public class FamilyController {
     @GetMapping("/getOneFamilyWithSlaves/{id}")
     @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @authorizationService.canAccessFamily(#id))")
     public ResponseEntity<FamilyWithSlavesDto> getOneFamilyWithSlaves(@PathVariable long id) {
-        return ResponseEntity.ok(FamilyWithSlavesDto.fromFamily(familyService.getOneFamilyWithSlaves(id)));
+        return ResponseEntity.ok(FamilyWithSlavesDto.fromFamily(
+                familyService.getOneFamilyWithSlaves(id)
+        ));
     }
 
     @PostMapping("/create")

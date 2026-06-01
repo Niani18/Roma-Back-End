@@ -1,5 +1,6 @@
 package com.javautn.roma.auth.controller;
 
+import com.javautn.roma.auth.dto.CurrentUserResponseDto;
 import com.javautn.roma.auth.dto.LoginRequestDto;
 import com.javautn.roma.auth.dto.LoginResponseDto;
 import com.javautn.roma.auth.dto.RegisterCreateDto;
@@ -31,5 +32,11 @@ public class AuthController {
     @PreAuthorize("hasRole('ADMIN')")
     public ResponseEntity<RegisterResponseDto> register(@Valid @RequestBody final RegisterCreateDto dto){
         return ResponseEntity.ok(authService.register(dto));
+    }
+
+    @GetMapping("/me")
+    @PreAuthorize("isAuthenticated()")
+    public ResponseEntity<CurrentUserResponseDto> me() {
+        return ResponseEntity.ok(authService.me());
     }
 }

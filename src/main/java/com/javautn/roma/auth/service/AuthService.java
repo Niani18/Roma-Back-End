@@ -1,5 +1,6 @@
 package com.javautn.roma.auth.service;
 
+import com.javautn.roma.auth.dto.CurrentUserResponseDto;
 import com.javautn.roma.auth.dto.LoginRequestDto;
 import com.javautn.roma.auth.dto.LoginResponseDto;
 import com.javautn.roma.auth.dto.RegisterCreateDto;
@@ -10,10 +11,12 @@ import com.javautn.roma.auth.repository.UserRepository;
 import com.javautn.roma.human.entity.CitizenEntity;
 import com.javautn.roma.human.service.HumanService;
 import com.javautn.roma.shared.exception.UnauthorizedException;
+import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.security.oauth2.jose.jws.MacAlgorithm;
 import org.springframework.security.oauth2.jwt.*;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
@@ -39,6 +42,7 @@ public class AuthService {
         this.humanService = humanService;
     }
 
+    @Transactional(readOnly = true)
     public LoginResponseDto login(LoginRequestDto dto) {
         UserEntity user = userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new UnauthorizedException("Credenciales inválidas"));
@@ -54,7 +58,7 @@ public class AuthService {
 
         String token = generateToken(user);
 
-        return new LoginResponseDto(token);
+        return LoginResponseDto.fromUser(token, user);
     }
 
     public RegisterResponseDto register(RegisterCreateDto dto) {
@@ -74,6 +78,11 @@ public class AuthService {
 
     }
 
+    @Transactional(readOnly = true)
+    public CurrentUserResponseDto me() {
+        return CurrentUserResponseDto.fromUser(currentUser());
+    }
+
     private String generateToken(UserEntity user) {
         Instant now = Instant.now();
 
@@ -83,6 +92,7 @@ public class AuthService {
                 .expiresAt(now.plus(2, ChronoUnit.HOURS))
                 .claim("username", user.getUsername())
                 .claim("roles", List.of(user.getRole().name()))
+                .claim("citizenId", user.getCitizenId())
                 .build();
 
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
@@ -90,5 +100,11 @@ public class AuthService {
         return jwtEncoder.encode(
                 JwtEncoderParameters.from(header, claims)
         ).getTokenValue();
+    }
+
+    private UserEntity currentUser() {
+        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        return userRepository.findById(Long.parseLong(userId))
+                .orElseThrow(() -> new UnauthorizedException("Usuario autenticado inexistente"));
     }
 }

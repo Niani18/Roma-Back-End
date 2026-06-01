@@ -3,24 +3,18 @@ package com.javautn.roma.auth.dto;
 import com.javautn.roma.auth.entity.Role;
 import com.javautn.roma.auth.entity.UserEntity;
 
-public class LoginResponseDto {
+public class CurrentUserResponseDto {
 
-    private String token;
     private Long userId;
     private String username;
     private Role role;
     private Long citizenId;
 
-    public LoginResponseDto(String token, Long userId, String username, Role role, Long citizenId) {
-        this.token = token;
+    public CurrentUserResponseDto(Long userId, String username, Role role, Long citizenId) {
         this.userId = userId;
         this.username = username;
         this.role = role;
         this.citizenId = citizenId;
-    }
-
-    public String getToken() {
-        return token;
     }
 
     public Long getUserId() {
@@ -39,9 +33,8 @@ public class LoginResponseDto {
         return citizenId;
     }
 
-    public static LoginResponseDto fromUser(String token, UserEntity user) {
-        return new LoginResponseDto(
-                token,
+    public static CurrentUserResponseDto fromUser(UserEntity user) {
+        return new CurrentUserResponseDto(
                 user.getId(),
                 user.getUsername(),
                 user.getRole(),
