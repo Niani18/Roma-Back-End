@@ -22,7 +22,7 @@ public class UserEntity {
     private Role role;
 
     @OneToOne(fetch = FetchType.LAZY)
-    @JoinColumn(name = "citizen_id", unique = true)
+    @JoinColumn(name = "citizen_id", unique = true, nullable = true)
     private CitizenEntity citizen;
 
     protected UserEntity() {}

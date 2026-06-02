@@ -21,6 +21,7 @@ import org.springframework.transaction.annotation.Transactional;
 import java.time.Instant;
 import java.time.temporal.ChronoUnit;
 import java.util.List;
+import java.util.Objects;
 
 @Service
 public class AuthService {
@@ -86,14 +87,18 @@ public class AuthService {
     private String generateToken(UserEntity user) {
         Instant now = Instant.now();
 
-        JwtClaimsSet claims = JwtClaimsSet.builder()
+        JwtClaimsSet.Builder claimsBuilder = JwtClaimsSet.builder()
                 .subject(user.getId().toString())
                 .issuedAt(now)
                 .expiresAt(now.plus(2, ChronoUnit.HOURS))
                 .claim("username", user.getUsername())
-                .claim("roles", List.of(user.getRole().name()))
-                .claim("citizenId", user.getCitizenId())
-                .build();
+                .claim("roles", List.of(user.getRole().name()));
+
+        if (user.getCitizenId() != null) {
+            claimsBuilder.claim("citizenId", user.getCitizenId());
+        }
+
+        JwtClaimsSet claims = claimsBuilder.build();
 
         JwsHeader header = JwsHeader.with(MacAlgorithm.HS256).build();
 
@@ -103,7 +108,7 @@ public class AuthService {
     }
 
     private UserEntity currentUser() {
-        String userId = SecurityContextHolder.getContext().getAuthentication().getName();
+        String userId = Objects.requireNonNull(SecurityContextHolder.getContext().getAuthentication()).getName();
         return userRepository.findById(Long.parseLong(userId))
                 .orElseThrow(() -> new UnauthorizedException("Usuario autenticado inexistente"));
     }

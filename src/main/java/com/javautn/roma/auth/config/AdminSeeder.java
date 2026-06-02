@@ -3,6 +3,7 @@ package com.javautn.roma.auth.config;
 import com.javautn.roma.auth.entity.Role;
 import com.javautn.roma.auth.entity.UserEntity;
 import com.javautn.roma.auth.repository.UserRepository;
+import org.jspecify.annotations.NonNull;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.security.crypto.password.PasswordEncoder;
 import org.springframework.stereotype.Component;
@@ -22,7 +23,7 @@ public class AdminSeeder implements CommandLineRunner {
     }
 
     @Override
-    public void run(String... args) {
+    public void run(String @NonNull ... args) {
         if (userRepository.findByUsername("admin").isPresent()) {
             return;
         }
