@@ -2,6 +2,7 @@ package com.javautn.roma.human.service;
 
 import com.javautn.roma.acquisition.entity.State;
 import com.javautn.roma.acquisition.repository.AcquisitionRepository;
+import com.javautn.roma.auth.repository.UserRepository;
 import com.javautn.roma.familyRol.repository.FamilyRolRepository;
 import com.javautn.roma.human.entity.CitizenEntity;
 import com.javautn.roma.human.entity.SlaveEntity;
@@ -13,7 +14,6 @@ import org.springframework.stereotype.Service;
 
 import java.util.Date;
 import java.util.List;
-import java.util.Optional;
 
 @Service
 public class HumanService {
@@ -22,12 +22,20 @@ public class HumanService {
     private final SlaveRepository slaveRepository;
     private final FamilyRolRepository familyRolRepository;
     private final AcquisitionRepository acquisitionRepository;
+    private final UserRepository userRepository;
 
-    public HumanService(final CitizenRepository citizenRepository, final SlaveRepository slaveRepository,  final FamilyRolRepository familyRolRepository,  final AcquisitionRepository acquisitionRepository) {
+    public HumanService(
+            final CitizenRepository citizenRepository,
+            final SlaveRepository slaveRepository,
+            final FamilyRolRepository familyRolRepository,
+            final AcquisitionRepository acquisitionRepository,
+            final UserRepository userRepository
+    ) {
         this.citizenRepository = citizenRepository;
         this.slaveRepository = slaveRepository;
         this.familyRolRepository = familyRolRepository;
         this.acquisitionRepository = acquisitionRepository;
+        this.userRepository = userRepository;
     }
 
     public List<CitizenEntity> getAllCitizen() {
@@ -61,7 +69,9 @@ public class HumanService {
             throw new NotFoundException("Citizen not found with id " + id);
         }
         citizen.setId(id);
-        return citizenRepository.saveAndFlush(citizen);
+        CitizenEntity updatedCitizen = citizenRepository.saveAndFlush(citizen);
+        syncUserState(updatedCitizen);
+        return updatedCitizen;
     }
 
     public SlaveEntity updateSlave(final long id, final SlaveEntity slave) {
@@ -96,7 +106,9 @@ public class HumanService {
         familyRolRepository.findByCitizenId(citizen.getId())
                 .forEach(familyRol -> familyRol.setDateOfUnjoining(deathDate));
 
-        return citizenRepository.save(citizen);
+        CitizenEntity updatedCitizen = citizenRepository.save(citizen);
+        syncUserState(updatedCitizen);
+        return updatedCitizen;
     }
 
     @Transactional
@@ -125,5 +137,13 @@ public class HumanService {
     public SlaveEntity getSlaveByFamily(long id) {
         return slaveRepository.findSlaveWithFamilies(id)
                 .orElseThrow(() -> new NotFoundException("Slave not found with id " + id));
+    }
+
+    private void syncUserState(CitizenEntity citizen) {
+        userRepository.findByCitizenId(citizen.getId())
+                .ifPresent(user -> {
+                    user.syncStateWithCitizenLife();
+                    userRepository.save(user);
+                });
     }
 }

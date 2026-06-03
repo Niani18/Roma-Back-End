@@ -43,7 +43,7 @@ public class AuthService {
         this.humanService = humanService;
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public LoginResponseDto login(LoginRequestDto dto) {
         UserEntity user = userRepository.findByUsername(dto.getUsername())
                 .orElseThrow(() -> new UnauthorizedException("Credenciales inválidas"));
@@ -55,6 +55,11 @@ public class AuthService {
 
         if (!passwordMatches) {
             throw new UnauthorizedException("Credenciales inválidas");
+        }
+
+        user.syncStateWithCitizenLife();
+        if (!user.isActive()) {
+            throw new UnauthorizedException("Usuario inactivo");
         }
 
         String token = generateToken(user);
@@ -79,9 +84,11 @@ public class AuthService {
 
     }
 
-    @Transactional(readOnly = true)
+    @Transactional
     public CurrentUserResponseDto me() {
-        return CurrentUserResponseDto.fromUser(currentUser());
+        UserEntity user = currentUser();
+        user.syncStateWithCitizenLife();
+        return CurrentUserResponseDto.fromUser(user);
     }
 
     private String generateToken(UserEntity user) {
@@ -92,6 +99,7 @@ public class AuthService {
                 .issuedAt(now)
                 .expiresAt(now.plus(2, ChronoUnit.HOURS))
                 .claim("username", user.getUsername())
+                .claim("state", user.getState().name())
                 .claim("roles", List.of(user.getRole().name()));
 
         if (user.getCitizenId() != null) {

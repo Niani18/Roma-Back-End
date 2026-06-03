@@ -21,6 +21,10 @@ public class UserEntity {
     @Column(nullable = false)
     private Role role;
 
+    @Enumerated(EnumType.STRING)
+    @Column(nullable = false, length = 16, columnDefinition = "varchar(16) default 'ACTIVE'")
+    private UserState state;
+
     @OneToOne(fetch = FetchType.LAZY)
     @JoinColumn(name = "citizen_id", unique = true, nullable = true)
     private CitizenEntity citizen;
@@ -32,6 +36,7 @@ public class UserEntity {
         this.password = password;
         this.role = role;
         this.citizen = citizen;
+        this.state = calculateState(role, citizen);
     }
 
     public Long getId() {
@@ -64,6 +69,15 @@ public class UserEntity {
 
     public void setRole(Role role) {
         this.role = role;
+        syncStateWithCitizenLife();
+    }
+
+    public UserState getState() {
+        return state;
+    }
+
+    public void setState(UserState state) {
+        this.state = state;
     }
 
     public CitizenEntity getCitizen() {
@@ -72,9 +86,33 @@ public class UserEntity {
 
     public void setCitizen(CitizenEntity citizen) {
         this.citizen = citizen;
+        syncStateWithCitizenLife();
     }
 
     public Long getCitizenId() {
         return citizen == null ? null : citizen.getId();
+    }
+
+    public boolean isActive() {
+        return calculateState(role, citizen) == UserState.ACTIVE;
+    }
+
+    public boolean syncStateWithCitizenLife() {
+        UserState updatedState = calculateState(role, citizen);
+        if (state != updatedState) {
+            state = updatedState;
+            return true;
+        }
+        return false;
+    }
+
+    private static UserState calculateState(Role role, CitizenEntity citizen) {
+        if (role == Role.ADMIN) {
+            return UserState.ACTIVE;
+        }
+        if (citizen == null || citizen.getDeathDate() != null) {
+            return UserState.INACTIVE;
+        }
+        return UserState.ACTIVE;
     }
 }

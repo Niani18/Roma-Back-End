@@ -46,6 +46,12 @@ public class AuthorizationService {
     }
 
     @Transactional(readOnly = true)
+    public boolean isCurrentUserActive() {
+        UserEntity user = currentUser();
+        return user != null && user.isActive();
+    }
+
+    @Transactional(readOnly = true)
     public boolean canAccessFamily(long familyId) {
         Long currentCitizenId = currentCitizenId();
         if (currentCitizenId == null) {
@@ -103,7 +109,7 @@ public class AuthorizationService {
 
     private Long currentCitizenId() {
         UserEntity user = currentUser();
-        if (user == null || user.getRole() != Role.USER || user.getCitizen() == null) {
+        if (user == null || user.getRole() != Role.USER || user.getCitizen() == null || !user.isActive()) {
             return null;
         }
         return user.getCitizen().getId();

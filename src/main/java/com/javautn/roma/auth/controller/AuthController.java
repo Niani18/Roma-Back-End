@@ -35,7 +35,7 @@ public class AuthController {
     }
 
     @GetMapping("/me")
-    @PreAuthorize("isAuthenticated()")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @authorizationService.isCurrentUserActive())")
     public ResponseEntity<CurrentUserResponseDto> me() {
         return ResponseEntity.ok(authService.me());
     }

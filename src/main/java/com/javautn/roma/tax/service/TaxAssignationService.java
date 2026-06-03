@@ -111,11 +111,17 @@ public class TaxAssignationService {
         }
 
         if(dto.getPaymentDate() != null)  {
+            if (entity.getState() == StateAsignation.PAID) {
+                throw new BadRequestException("The tax is already paid");
+            }
             entity.setPaymentDate(dto.getPaymentDate());
             entity.setState(StateAsignation.PAID);
         }
 
         if(dto.getInterest() != null) {
+            if (entity.getState() != StateAsignation.PENDING) {
+                throw new BadRequestException("Sanction can only be updated while tax assignation is PENDING");
+            }
             entity.setInterest(dto.getInterest());
         }
 

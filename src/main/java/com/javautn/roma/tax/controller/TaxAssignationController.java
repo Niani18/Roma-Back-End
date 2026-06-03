@@ -55,7 +55,7 @@ public class TaxAssignationController {
     }
 
     @PatchMapping("/update/{id}")
-    @PreAuthorize("hasRole('ADMIN')")
+    @PreAuthorize("hasRole('ADMIN') or (hasRole('USER') and @authorizationService.canAccessTaxAssignation(#id))")
     public ResponseEntity<TaxAssignationResponseDTO> updateTaxAssignation(
             @PathVariable long id, @Valid @RequestBody TaxAssignationUpdateDTO dto) {
         return ResponseEntity.ok(TaxAssignationResponseDTO.fromTaxAssignation(
