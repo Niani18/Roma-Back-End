@@ -7,6 +7,7 @@ import com.javautn.roma.sentence.dto.SentenceResponseDto;
 import com.javautn.roma.sentence.dto.SentenceUpdateDto;
 import com.javautn.roma.sentence.entity.SentenceEntity;
 import com.javautn.roma.sentence.repository.SentenceRepository;
+import com.javautn.roma.shared.exception.ConflictException;
 import com.javautn.roma.shared.exception.NotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -35,6 +36,10 @@ public class SentenceService {
         LegalCaseEntity legalCase = legalCaseRepository.findById(dto.getIdLegalCase())
                 .orElseThrow(() -> new NotFoundException("Legal case not found with id " + dto.getIdLegalCase()));
 
+        if (dto.getEstimatedEndDate() != null && dto.getEstimatedEndDate().before(dto.getApplicationDate())) {
+            throw new ConflictException("The estimated end date cannot be before the application date");
+        }
+
         SentenceEntity sentence = new SentenceEntity(
                 dto.getDescription(),
                 dto.getApplicationDate(),
@@ -52,7 +57,12 @@ public class SentenceService {
                 .orElseThrow(() -> new NotFoundException("Sentence not found with id " + id));
 
         if (sentence.getFinalEndDate() == null) {
-            sentence.setFinalEndDate(new Date());
+            Date today = new Date();
+
+            if (today.before(sentence.getApplicationDate())) {
+                throw new ConflictException("The final end date cannot be before the application date");
+            }
+            sentence.setFinalEndDate(today);
         }
 
         SentenceEntity saved = sentenceRepository.save(sentence);

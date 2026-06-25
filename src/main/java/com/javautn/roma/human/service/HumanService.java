@@ -8,6 +8,7 @@ import com.javautn.roma.human.entity.CitizenEntity;
 import com.javautn.roma.human.entity.SlaveEntity;
 import com.javautn.roma.human.repository.CitizenRepository;
 import com.javautn.roma.human.repository.SlaveRepository;
+import com.javautn.roma.shared.exception.ConflictException;
 import com.javautn.roma.shared.exception.NotFoundException;
 import jakarta.transaction.Transactional;
 import org.springframework.stereotype.Service;
@@ -101,6 +102,10 @@ public class HumanService {
         Date deathDate = new Date();
         CitizenEntity citizen = getCitizen(id);
 
+        if (citizen.getBirthDate() != null && deathDate.before(citizen.getBirthDate())) {
+            throw new ConflictException("The death date cannot be before the birth date");
+        }
+
         citizen.setDeathDate(deathDate);
 
         familyRolRepository.findByCitizenId(citizen.getId())
@@ -115,6 +120,10 @@ public class HumanService {
     public SlaveEntity setDeathDateOfSlaves(final long id) {
         Date deathDate = new Date();
         SlaveEntity slave = getSlave(id);
+
+        if (slave.getBirthDate() != null && deathDate.before(slave.getBirthDate())) {
+            throw new ConflictException("The death date cannot be before the birth date");
+        }
 
         slave.setDeathDate(deathDate);
 

@@ -63,6 +63,11 @@ public class LegalCaseService {
         if(legalCase.getEndDate() != null){
             throw new ConflictException("Legal case with id " + id + " is already closed");
         }
+        if (dto.getEndDate() != null) {
+            if (dto.getEndDate().before(legalCase.getStartDate())) {
+                throw new ConflictException("The end date cannot be before the start date (" + legalCase.getStartDate() + ")");
+            }
+        }
 
         legalCase.setEndDate(dto.getEndDate());
         legalCase.setState(dto.getState());
