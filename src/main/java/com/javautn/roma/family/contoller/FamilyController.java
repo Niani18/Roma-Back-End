@@ -74,4 +74,9 @@ public class FamilyController {
     public ResponseEntity<FamilyResponseDto> create(@Valid @RequestBody FamilyCreateDto dto){
         return ResponseEntity.ok(FamilyResponseDto.fromFamily(familyService.createFamily(dto)));
     }
+
+
+
+    //Agreagar search
+
 }
