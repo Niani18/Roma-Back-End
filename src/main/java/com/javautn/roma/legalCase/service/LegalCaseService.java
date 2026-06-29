@@ -45,6 +45,10 @@ public class LegalCaseService {
         CrimeEntity crime = crimeRepository.findById(dto.getCrimeId())
                 .orElseThrow(() -> new NotFoundException("Crime not found with id " + dto.getCrimeId()));
 
+        if (dto.getStartDate().before(citizen.getBirthDate())) {
+            throw new ConflictException("The legal case start date cannot be before the citizen birth date");
+        }
+
         LegalCaseEntity legalCase = new LegalCaseEntity(
                 dto.getStartDate(),
                 null,
