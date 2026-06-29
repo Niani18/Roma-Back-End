@@ -124,4 +124,17 @@ public class HumanController {
     public ResponseEntity<SlaveResponseDTO> deleteSlave(@PathVariable final long id) {
         return ResponseEntity.ok(SlaveResponseDTO.fromSlave(humanService.deleteSlave(id)));
     }
+
+
+    // Agregar search ciudadano
+    @GetMapping("citizen/search")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<CitizenResponseDTO>> queryCitizen(
+            @RequestParam(defaultValue = "0") long page,
+            @RequestParam(required = false) Long citizenId,
+            @RequestParam(required = false) String fullName,
+            @RequestParam(required = false) List<String> sort
+    ) {
+        return ResponseEntity.ok(humanService.searchCitizen(page, citizenId, fullName, sort).stream().map(CitizenResponseDTO::fromCitizen).toList());
+    }
 }

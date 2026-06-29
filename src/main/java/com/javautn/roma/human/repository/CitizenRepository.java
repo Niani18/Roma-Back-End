@@ -2,12 +2,13 @@ package com.javautn.roma.human.repository;
 
 import com.javautn.roma.human.entity.CitizenEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.Optional;
 
-public interface CitizenRepository extends JpaRepository<CitizenEntity, Long> {
+public interface CitizenRepository extends JpaRepository<CitizenEntity, Long>, JpaSpecificationExecutor<CitizenEntity> {
     @Query("""
         select distinct c
         from CitizenEntity c

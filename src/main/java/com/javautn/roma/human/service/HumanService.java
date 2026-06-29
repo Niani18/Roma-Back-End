@@ -8,9 +8,11 @@ import com.javautn.roma.human.entity.CitizenEntity;
 import com.javautn.roma.human.entity.SlaveEntity;
 import com.javautn.roma.human.repository.CitizenRepository;
 import com.javautn.roma.human.repository.SlaveRepository;
+import com.javautn.roma.human.specs.HumanSpecifications;
 import com.javautn.roma.shared.exception.ConflictException;
 import com.javautn.roma.shared.exception.NotFoundException;
 import jakarta.transaction.Transactional;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.Date;
@@ -154,5 +156,13 @@ public class HumanService {
                     user.syncStateWithCitizenLife();
                     userRepository.save(user);
                 });
+    }
+
+    public List<CitizenEntity> searchCitizen(Long page, Long id, String name, List<String> sortKeys) {
+        return citizenRepository.findAll(
+                Specification.where(HumanSpecifications.isId(id))
+                        .or(HumanSpecifications.hasName(name)),
+                HumanSpecifications.page((int)page.longValue(), 5)
+        ).toList();
     }
 }
