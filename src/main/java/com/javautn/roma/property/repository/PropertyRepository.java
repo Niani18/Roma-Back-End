@@ -2,13 +2,14 @@ package com.javautn.roma.property.repository;
 
 import com.javautn.roma.property.entity.PropertyEntity;
 import org.springframework.data.jpa.repository.JpaRepository;
+import org.springframework.data.jpa.repository.JpaSpecificationExecutor;
 import org.springframework.data.jpa.repository.Query;
 import org.springframework.data.repository.query.Param;
 
 import java.util.List;
 import java.util.Optional;
 
-public interface PropertyRepository extends JpaRepository<PropertyEntity, Long> {
+public interface PropertyRepository extends JpaRepository<PropertyEntity, Long>, JpaSpecificationExecutor<PropertyEntity> {
     @Query("""
             select distinct p
             from PropertyEntity p

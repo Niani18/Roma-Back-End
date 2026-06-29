@@ -72,6 +72,15 @@ public class PropertyController {
         return ResponseEntity.ok(new PropertyResponseDto(property.getId(), property.getName(), property.getDescription()));
     }
 
-
-    //Agregar serach
+    @GetMapping("/search")
+    @PreAuthorize("hasRole('ADMIN')")
+    public ResponseEntity<List<PropertyResponseDto>> searchProperties(
+            @RequestParam(defaultValue = "0") long page,
+            @RequestParam(required = false) Long id) {
+        return ResponseEntity.ok(
+                propertyService.searchProperties(page, id).stream()
+                        .map(PropertyResponseDto::fromProperty)
+                        .toList()
+        );
+    }
 }

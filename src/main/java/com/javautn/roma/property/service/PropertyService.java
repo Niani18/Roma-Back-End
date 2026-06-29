@@ -8,7 +8,9 @@ import com.javautn.roma.property.dto.PropertyWithAllHoldingsDto;
 import com.javautn.roma.property.dto.PropertyWithOwnersDto;
 import com.javautn.roma.property.entity.PropertyEntity;
 import com.javautn.roma.property.repository.PropertyRepository;
+import com.javautn.roma.property.specs.PropertySpecifications;
 import com.javautn.roma.shared.exception.NotFoundException;
+import org.springframework.data.jpa.domain.Specification;
 import org.springframework.stereotype.Service;
 
 import java.util.List;
@@ -95,6 +97,15 @@ public class PropertyService {
                 holding.getPrice(),
                 holding.getDate()
         );
+    }
+
+    public List<PropertyEntity> searchProperties(long page, Long id) {
+        return propertyRepository.findAll(
+                Specification.where(
+                        PropertySpecifications.isId(id)
+                ),
+                PropertySpecifications.page((int) page, 6)
+        ).toList();
     }
 
 }
